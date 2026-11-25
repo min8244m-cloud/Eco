@@ -1,0 +1,25 @@
+{
+  "name": "Emboss Wave Studio",
+  "short_name": "Emboss Studio",
+  "description": "မြန်မာစာ Neumorphic Emboss နှင့် Audio Wave ဗီဒီယိုဖန်တီးစက်",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e8edf5",
+  "theme_color": "#e8edf5",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23e8edf5'/%3E%3Crect x='56' y='56' width='400' height='400' rx='84' fill='%23e8edf5' stroke='%23ffffff' stroke-width='10'/%3E%3Cpath d='M120 290 Q170 210 220 290 T320 290 T400 260' fill='none' stroke='%2364748b' stroke-width='22' stroke-linecap='round'/%3E%3Ctext x='256' y='215' text-anchor='middle' font-family='sans-serif' font-weight='800' font-size='96' fill='%2364748b'%3E%E1%80%99%E1%80%BC%E1%80%94%E1%80%BA%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23e8edf5'/%3E%3Crect x='56' y='56' width='400' height='400' rx='84' fill='%23e8edf5' stroke='%23ffffff' stroke-width='10'/%3E%3Cpath d='M120 290 Q170 210 220 290 T320 290 T400 260' fill='none' stroke='%2364748b' stroke-width='22' stroke-linecap='round'/%3E%3Ctext x='256' y='215' text-anchor='middle' font-family='sans-serif' font-weight='800' font-size='96' fill='%2364748b'%3E%E1%80%99%E1%80%BC%E1%80%94%E1%80%BA%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
