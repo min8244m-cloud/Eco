@@ -1,0 +1,2957 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Emboss Wave Studio — မြန်မာစာ & Audio Wave Video Maker</title>
+
+    <!-- PWA & Mobile Web App Meta Tags -->
+    <meta name="theme-color" content="#e8edf5">
+    <meta name="description" content="မြန်မာစာ Neumorphic Emboss စတိုင်၊ SRT စာတန်းထိုး နှင့် Audio Wave ဗီဒီယိုဖန်တီးစက်">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Emboss Studio">
+
+    <!-- Inline SVG App Icon (Favicon & Apple Touch Icon) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23e8edf5'/%3E%3Crect x='56' y='56' width='400' height='400' rx='84' fill='%23e8edf5' stroke='%23ffffff' stroke-width='10'/%3E%3Cpath d='M120 290 Q170 210 220 290 T320 290 T400 260' fill='none' stroke='%2364748b' stroke-width='22' stroke-linecap='round'/%3E%3Ctext x='256' y='215' text-anchor='middle' font-family='sans-serif' font-weight='800' font-size='96' fill='%2364748b'%3E%E1%80%99%E1%80%BC%E1%80%94%E1%80%BA%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23e8edf5'/%3E%3Crect x='56' y='56' width='400' height='400' rx='84' fill='%23e8edf5' stroke='%23ffffff' stroke-width='10'/%3E%3Cpath d='M120 290 Q170 210 220 290 T320 290 T400 260' fill='none' stroke='%2364748b' stroke-width='22' stroke-linecap='round'/%3E%3Ctext x='256' y='215' text-anchor='middle' font-family='sans-serif' font-weight='800' font-size='96' fill='%2364748b'%3E%E1%80%99%E1%80%BC%E1%80%94%E1%80%BA%3C/text%3E%3C/svg%3E">
+    <link id="dynamicManifestLink" rel="manifest" href="./manifest.json">
+
+    <!-- Google Fonts: Noto Sans Myanmar & Padauk (Only external dependency) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================================
+           Design Tokens & Reset (Zero External CSS Dependencies)
+        ========================================================= */
+        :root {
+            --bg: #e8edf5;
+            --surface: #e8edf5;
+            --shadow-light: #ffffff;
+            --shadow-dark: #c4cddb;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --text-subtle: #94a3b8;
+            --accent: #4f6d9a;
+            --danger: #e11d48;
+            --success: #059669;
+            --radius-xl: 26px;
+            --radius-lg: 18px;
+            --radius-md: 14px;
+            --radius-pill: 999px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Noto Sans Myanmar', 'Padauk', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        button, input, textarea, select {
+            font-family: inherit;
+        }
+
+        /* =========================================================
+           Neumorphic Primitives
+        ========================================================= */
+        .neu-card {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: -9px -9px 20px var(--shadow-light),
+                         9px 9px 20px var(--shadow-dark);
+        }
+
+        .neu-card-sm {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: -6px -6px 14px var(--shadow-light),
+                         6px 6px 14px var(--shadow-dark);
+        }
+
+        .neu-well {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: inset 5px 5px 11px var(--shadow-dark),
+                        inset -5px -5px 11px var(--shadow-light);
+        }
+
+        .neu-btn {
+            background: var(--surface);
+            color: var(--text-main);
+            border: none;
+            border-radius: var(--radius-md);
+            box-shadow: -4px -4px 10px var(--shadow-light),
+                         4px 4px 10px var(--shadow-dark);
+            cursor: pointer;
+            transition: transform 0.16s ease, box-shadow 0.18s ease, color 0.18s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            user-select: none;
+            font-weight: 600;
+        }
+
+        .neu-btn:active,
+        .neu-btn.active {
+            box-shadow: inset 4px 4px 8px var(--shadow-dark),
+                        inset -4px -4px 8px var(--shadow-light);
+            transform: scale(0.98);
+            color: var(--accent);
+        }
+
+        .neu-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        .neu-btn-primary {
+            background: linear-gradient(135deg, #5674a3 0%, #3d5780 100%);
+            color: #ffffff;
+            box-shadow: -4px -4px 10px var(--shadow-light),
+                         4px 4px 12px rgba(61, 87, 128, 0.45);
+        }
+
+        .neu-btn-primary:active {
+            color: #ffffff;
+            box-shadow: inset 3px 3px 8px rgba(20, 30, 48, 0.45);
+        }
+
+        .neu-btn-danger {
+            background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+            color: #ffffff;
+            box-shadow: -4px -4px 10px var(--shadow-light),
+                         4px 4px 12px rgba(190, 18, 60, 0.4);
+        }
+
+        .neu-btn-danger:active {
+            color: #ffffff;
+            box-shadow: inset 3px 3px 8px rgba(90, 10, 30, 0.45);
+        }
+
+        .neu-circle {
+            background: var(--surface);
+            border: none;
+            border-radius: 50%;
+            box-shadow: -5px -5px 12px var(--shadow-light),
+                         5px 5px 12px var(--shadow-dark);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            transition: transform 0.16s ease, box-shadow 0.18s ease;
+            user-select: none;
+        }
+
+        .neu-circle:active,
+        .neu-circle.active {
+            box-shadow: inset 4px 4px 9px var(--shadow-dark),
+                        inset -4px -4px 9px var(--shadow-light);
+            transform: scale(0.96);
+        }
+
+        .neu-input {
+            width: 100%;
+            background: var(--surface);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: var(--radius-md);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark),
+                        inset -4px -4px 8px var(--shadow-light);
+            padding: 10px 14px;
+            font-size: 13.5px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .neu-input:focus {
+            border-color: rgba(79, 109, 154, 0.45);
+        }
+
+        /* Range Slider */
+        input[type="range"].neu-range {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
+            background: var(--surface);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark),
+                        inset -3px -3px 6px var(--shadow-light);
+            outline: none;
+        }
+
+        input[type="range"].neu-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 2px solid #ffffff;
+            box-shadow: -3px -3px 6px var(--shadow-light),
+                         3px 3px 6px var(--shadow-dark);
+            cursor: pointer;
+        }
+
+        input[type="range"].neu-range::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 2px solid #ffffff;
+            box-shadow: -3px -3px 6px var(--shadow-light),
+                         3px 3px 6px var(--shadow-dark);
+            cursor: pointer;
+        }
+
+        /* =========================================================
+           Layout Structure
+        ========================================================= */
+        .app-shell {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 14px 14px 42px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 2px 2px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.01em;
+        }
+
+        .brand p {
+            margin: 2px 0 0;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-xs {
+            padding: 8px 11px;
+            font-size: 11.5px;
+            border-radius: 12px;
+        }
+
+        .btn-sm {
+            padding: 10px 14px;
+            font-size: 12.5px;
+        }
+
+        .btn-md {
+            padding: 12px 16px;
+            font-size: 13.5px;
+        }
+
+        /* Canvas Preview Container */
+        .stage-wrapper {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+        }
+
+        .canvas-frame {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #studioCanvas {
+            display: block;
+            max-width: 100%;
+            max-height: 62vh;
+            width: auto;
+            height: auto;
+            border-radius: 18px;
+            box-shadow: 0 10px 26px rgba(130, 145, 168, 0.25);
+            background: var(--bg);
+        }
+
+        /* Live Recording Indicator Pill */
+        .rec-badge {
+            position: absolute;
+            top: 22px;
+            left: 22px;
+            z-index: 10;
+            background: rgba(225, 29, 72, 0.92);
+            color: #ffffff;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 700;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .rec-badge.active {
+            display: inline-flex;
+        }
+
+        .rec-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ffffff;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.25; }
+        }
+
+        /* Playback Bar under Canvas */
+        .transport-bar {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .seek-track {
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .seek-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #9fb2cc 0%, #5875a3 100%);
+            transition: width 0.08s linear;
+        }
+
+        .time-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+            padding: 0 2px;
+        }
+
+        .controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .play-btn {
+            width: 56px;
+            height: 56px;
+        }
+
+        .side-btn {
+            width: 42px;
+            height: 42px;
+            color: var(--text-muted);
+        }
+
+        /* Action Row (Video Download & Screen Record) */
+        .export-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+        }
+
+        /* Recorded Video Download Card */
+        .download-card {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .download-card.visible {
+            display: flex;
+        }
+
+        .download-card video {
+            width: 100%;
+            max-height: 260px;
+            border-radius: 14px;
+            background: #0f172a;
+        }
+
+        /* Studio Tabs */
+        .tab-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 6px;
+            border-radius: 18px;
+        }
+
+        .tab-btn {
+            padding: 9px 4px;
+            font-size: 11.5px;
+            border-radius: 13px;
+            background: transparent;
+            box-shadow: none;
+            color: var(--text-muted);
+        }
+
+        .tab-btn.active {
+            background: var(--surface);
+            color: var(--accent);
+            box-shadow: -3px -3px 7px var(--shadow-light),
+                         3px 3px 7px var(--shadow-dark);
+            transform: none;
+        }
+
+        /* Tab Panels */
+        .panel-card {
+            padding: 18px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .tab-panel {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .tab-panel.active {
+            display: flex;
+        }
+
+        .field-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 9px;
+        }
+
+        /* Emboss Mini Preview Buttons */
+        .emboss-opt {
+            padding: 11px 8px;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .emboss-opt small {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-subtle);
+        }
+
+        .emboss-demo {
+            font-size: 16px;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .demo-soft {
+            color: #e8edf5;
+            text-shadow: -2px -2px 4px #ffffff, 2px 2px 4px rgba(166, 178, 198, 0.85);
+        }
+
+        .demo-deep {
+            color: #e8edf5;
+            text-shadow: -3px -3px 5px #ffffff, 4px 4px 7px rgba(145, 160, 182, 0.95);
+        }
+
+        .demo-debossed {
+            color: #dde4ef;
+            text-shadow: 1px 1px 2px #ffffff, -1px -1px 2px rgba(132, 146, 168, 0.85);
+        }
+
+        .demo-metallic {
+            background: linear-gradient(180deg, #ffffff 0%, #c4cddb 48%, #7d8b9e 54%, #dce2ec 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(1px 2px 2px rgba(95, 110, 130, 0.65));
+        }
+
+        /* Color Swatches */
+        .swatch-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2.5px solid #ffffff;
+            box-shadow: -2px -2px 5px var(--shadow-light), 2px 2px 5px var(--shadow-dark);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            position: relative;
+            padding: 0;
+        }
+
+        .swatch.active {
+            transform: scale(1.16);
+            box-shadow: 0 0 0 2.5px var(--accent), 2px 2px 6px var(--shadow-dark);
+        }
+
+        .swatch-auto {
+            background: linear-gradient(135deg, #ffffff 0%, #e8edf5 50%, #c4cddb 100%);
+        }
+
+        .color-picker-wrap {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2.5px solid #ffffff;
+            box-shadow: -2px -2px 5px var(--shadow-light), 2px 2px 5px var(--shadow-dark);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .color-picker-wrap input[type="color"] {
+            width: 44px;
+            height: 44px;
+            border: none;
+            padding: 0;
+            background: none;
+            cursor: pointer;
+        }
+
+        /* Toggle Switch */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            border-radius: 999px;
+            background: var(--surface);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark),
+                        inset -3px -3px 6px var(--shadow-light);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .slider::before {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 3px;
+            top: 3px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 1px 2px 4px rgba(100, 116, 139, 0.35);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .switch input:checked + .slider::before {
+            transform: translateX(20px);
+            background: var(--accent);
+        }
+
+        /* SRT Cue List */
+        .srt-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(5, 150, 105, 0.12);
+            color: var(--success);
+        }
+
+        .cue-list {
+            max-height: 210px;
+            overflow-y: auto;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .cue-item {
+            width: 100%;
+            text-align: left;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255, 255, 255, 0.45);
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            transition: background 0.15s ease;
+        }
+
+        .cue-item:hover,
+        .cue-item.active {
+            background: rgba(79, 109, 154, 0.16);
+            color: var(--accent);
+        }
+
+        .cue-time {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-subtle);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Screen Record Mode */
+        body.record-mode {
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100dvh;
+        }
+
+        body.record-mode .app-shell {
+            max-width: 100%;
+            padding: 12px;
+            height: 100dvh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body.record-mode .hide-in-record {
+            display: none !important;
+        }
+
+        body.record-mode .stage-wrapper {
+            background: transparent;
+            box-shadow: none;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+        }
+
+        body.record-mode #studioCanvas {
+            max-height: 92dvh;
+            max-width: 96vw;
+        }
+
+        /* Floating Hints & Toast */
+        .toast {
+            position: fixed;
+            bottom: 22px;
+            left: 50%;
+            transform: translate(-50%, 16px);
+            z-index: 100;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-main);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.28s ease;
+            max-width: 90vw;
+            text-align: center;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        .record-hint {
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translate(-50%, -12px);
+            z-index: 100;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s ease;
+            white-space: nowrap;
+        }
+
+        .record-hint.show {
+            opacity: 0.9;
+            transform: translate(-50%, 0);
+        }
+
+        /* Modal for GitHub PWA Setup */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(30, 41, 59, 0.45);
+            backdrop-filter: blur(4px);
+            z-index: 90;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-backdrop.open {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 440px;
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 15.5px;
+            font-weight: 800;
+        }
+
+        .checklist {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 12.5px;
+            line-height: 1.75;
+            color: var(--text-muted);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hidden Audio Element -->
+    <audio id="audioEl" crossorigin="anonymous" preload="metadata"></audio>
+
+    <!-- Record Mode Exit Hint -->
+    <div id="recordHint" class="record-hint neu-card-sm">
+        မုဒ်ပိတ်ရန် နောက်ခံကို ၂ ချက်နှိပ်ပါ (သို့) ESC နှိပ်ပါ
+    </div>
+
+    <!-- Custom Toast Notification (No alert() used) -->
+    <div id="toast" class="toast neu-card-sm"></div>
+
+    <!-- Main Mobile-First Studio Shell -->
+    <div class="app-shell">
+
+        <!-- =========================================================
+             TOP HEADER BAR (Install App + GitHub PWA Modal)
+        ========================================================= -->
+        <header class="top-bar hide-in-record">
+            <div class="brand">
+                <h1>Emboss Wave Studio</h1>
+                <p>မြန်မာစာ ကြွပုံစံ & Video Maker</p>
+            </div>
+            <div class="top-actions">
+                <button id="btnInstallApp" type="button" class="neu-btn btn-xs" title="App Install လုပ်မယ်">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+                    </svg>
+                    <span>App Install</span>
+                </button>
+                <button id="btnOpenPwaModal" type="button" class="neu-btn btn-xs" title="GitHub Pages PWA ဖိုင်များ">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                    </svg>
+                    <span>GitHub</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- =========================================================
+             1. LIVE WYSIWYG CANVAS STAGE
+        ========================================================= -->
+        <section class="neu-card stage-wrapper">
+            <!-- Live Recording Badge -->
+            <div id="recBadge" class="rec-badge">
+                <span class="rec-dot"></span>
+                <span>REC</span>
+                <span id="recTimer">00:00</span>
+            </div>
+
+            <!-- Canvas Frame -->
+            <div class="canvas-frame">
+                <canvas id="studioCanvas" width="720" height="1280"></canvas>
+            </div>
+
+            <!-- Transport & Seek Bar (Hidden in Screen Record Mode) -->
+            <div class="transport-bar hide-in-record">
+                <div id="seekTrack" class="neu-well seek-track">
+                    <div id="seekFill" class="seek-fill"></div>
+                </div>
+                <div class="time-row">
+                    <span id="timeCurrent">0:00</span>
+                    <span id="timeDuration">0:00</span>
+                </div>
+
+                <div class="controls-row">
+                    <button id="btnReplay" type="button" class="neu-circle side-btn" title="အစမှပြန်ဖွင့်မယ်" aria-label="အစမှပြန်ဖွင့်မယ်">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v5h5"/>
+                        </svg>
+                    </button>
+
+                    <button id="btnPlayPause" type="button" class="neu-circle play-btn" title="ဖွင့်မယ် / ရပ်မယ်" aria-label="ဖွင့်မယ် / ရပ်မယ်">
+                        <svg id="iconPlay" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="margin-left:3px;">
+                            <path d="M8 5.14v14l11-7-11-7z"/>
+                        </svg>
+                        <svg id="iconPause" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 5h4v14H6V5zm8 0h4v14h-4V5z"/>
+                        </svg>
+                    </button>
+
+                    <button id="btnMute" type="button" class="neu-circle side-btn" title="အသံပိတ် / ဖွင့်" aria-label="အသံပိတ် / ဖွင့်">
+                        <svg id="iconVolOn" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                            <path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"/>
+                        </svg>
+                        <svg id="iconVolOff" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                            <path d="M23 9l-6 6M17 9l6 6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Export & Screen Record Buttons -->
+            <div class="export-grid hide-in-record">
+                <button id="btnRecordVideo" type="button" class="neu-btn neu-btn-primary btn-sm">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <circle cx="12" cy="12" r="9"/>
+                        <circle cx="12" cy="12" r="3.5" fill="currentColor"/>
+                    </svg>
+                    <span id="btnRecordLabel">Video ထုတ်မယ်</span>
+                </button>
+                <button id="btnScreenRecordMode" type="button" class="neu-btn btn-sm">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <rect x="3" y="4" width="18" height="16" rx="3"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <span>Screen Record မုဒ်</span>
+                </button>
+            </div>
+
+            <!-- Full-Track Auto Record Option -->
+            <div class="hide-in-record" style="width:100%;">
+                <button id="btnAutoRecordFull" type="button" class="neu-btn btn-xs" style="width:100%; padding:10px; color:var(--accent);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <path d="M5 3l14 9-14 9V3z"/>
+                    </svg>
+                    <span>အစကနေ အဆုံးထိ Auto ဖမ်းပြီး Download ထုတ်မယ်</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             RECORDED VIDEO PREVIEW & DIRECT DOWNLOAD CARD
+        ========================================================= -->
+        <section id="downloadCard" class="neu-card download-card hide-in-record">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                    <strong style="font-size:13.5px; color:var(--success);">Video ဖမ်းယူပြီးပါပြီ</strong>
+                    <div id="videoMetaInfo" style="font-size:11px; color:var(--text-muted); margin-top:2px;"></div>
+                </div>
+                <button id="btnCloseDownload" type="button" class="neu-btn btn-xs">ပိတ်မယ်</button>
+            </div>
+            <video id="recordedVideoPreview" controls playsinline></video>
+            <a id="directDownloadLink" class="neu-btn neu-btn-primary btn-md" download="emboss-wave-video.webm" style="text-decoration:none; width:100%;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+                </svg>
+                <span>Video ကို သိမ်းမယ် (Download)</span>
+            </a>
+        </section>
+
+        <!-- =========================================================
+             STUDIO CONTROL TABS
+        ========================================================= -->
+        <nav class="neu-well tab-bar hide-in-record" role="tablist">
+            <button type="button" class="neu-btn tab-btn active" data-tab="media">ဖိုင် & SRT</button>
+            <button type="button" class="neu-btn tab-btn" data-tab="text">စာသားစတိုင်</button>
+            <button type="button" class="neu-btn tab-btn" data-tab="wave">Wave & အရောင်</button>
+            <button type="button" class="neu-btn tab-btn" data-tab="stage">ပုံစံ & အရွယ်</button>
+        </nav>
+
+        <!-- =========================================================
+             STUDIO CONTROL PANELS
+        ========================================================= -->
+        <section class="neu-card panel-card hide-in-record">
+
+            <!-- TAB 1: AUDIO, SRT & MANUAL LYRICS -->
+            <div id="tab-media" class="tab-panel active">
+                <!-- Audio Upload -->
+                <div>
+                    <div class="field-label">
+                        <span>၁။ သီချင်း / အသံဖိုင် တင်ရန် (MP3, WAV, M4A)</span>
+                    </div>
+                    <input id="audioInput" type="file" accept=".mp3,.wav,.m4a,.ogg,audio/*" class="hidden">
+                    <label for="audioInput" class="neu-btn btn-md" style="width:100%;">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path d="M9 18V5l12-2v13"/>
+                            <circle cx="6" cy="18" r="3"/>
+                            <circle cx="18" cy="16" r="3"/>
+                        </svg>
+                        <span id="audioFileName" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">MP3 / WAV ဖိုင် ရွေးချယ်ပါ</span>
+                    </label>
+                </div>
+
+                <!-- SRT Upload -->
+                <div>
+                    <div class="field-label">
+                        <span>၂။ စာတန်းထိုးဖိုင် (.srt) တင်ရန်</span>
+                        <span id="srtCountBadge" class="srt-badge hidden">SRT 0 ခု</span>
+                    </div>
+                    <input id="srtInput" type="file" accept=".srt,text/plain" class="hidden">
+                    <div style="display:flex; gap:8px;">
+                        <label for="srtInput" class="neu-btn btn-sm" style="flex:1;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <rect x="3" y="5" width="18" height="14" rx="2"/>
+                                <path d="M7 15h4m2 0h4M7 11h10"/>
+                            </svg>
+                            <span id="srtFileName" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">.srt ဖိုင် ရွေးချယ်ပါ</span>
+                        </label>
+                        <button id="btnClearSrt" type="button" class="neu-btn btn-xs hidden" style="color:var(--danger);">ဖျက်မယ်</button>
+                    </div>
+
+                    <!-- Collapsible SRT Cue Preview -->
+                    <div id="srtPreviewSection" class="hidden" style="margin-top:10px;">
+                        <button id="btnToggleCueList" type="button" class="neu-btn btn-xs" style="width:100%; justify-content:space-between;">
+                            <span>SRT စာကြောင်းများ ကြည့်ရန် (နှိပ်ပြီး အချိန်ကျော်နိုင်)</span>
+                            <span id="cueChevron">▼</span>
+                        </button>
+                        <div id="srtCueListWrap" class="neu-well cue-list hidden" style="margin-top:8px;"></div>
+                    </div>
+                </div>
+
+                <!-- Header Song Title & Subtitle -->
+                <div class="grid-2">
+                    <div>
+                        <label class="field-label" for="inputSongTitle">အပေါ်ခေါင်းစဉ်</label>
+                        <input id="inputSongTitle" type="text" class="neu-input" value="နှလုံးသားထဲက သံစဉ်" placeholder="သီချင်းအမည်">
+                    </div>
+                    <div>
+                        <label class="field-label" for="inputSubtitle">အောက်စာတန်းငယ်</label>
+                        <input id="inputSubtitle" type="text" class="neu-input" value="မြန်မာသီချင်းလေးများ" placeholder="အဆိုတော်အမည်">
+                    </div>
+                </div>
+
+                <!-- Fallback Manual Burmese Text Mode -->
+                <div id="manualTextBox">
+                    <div class="field-label">
+                        <span>ကိုယ်တိုင်ရိုက် စာသားများ (SRT မတင်ထားပါက)</span>
+                        <select id="manualIntervalSelect" class="neu-input" style="width:auto; padding:4px 8px; font-size:11px;">
+                            <option value="3">3s / ကြောင်း</option>
+                            <option value="5" selected>5s / ကြောင်း</option>
+                            <option value="7">7s / ကြောင်း</option>
+                            <option value="10">10s / ကြောင်း</option>
+                            <option value="15">15s / ကြောင်း</option>
+                        </select>
+                    </div>
+                    <textarea id="inputManualLines" rows="4" class="neu-input" style="resize:vertical; line-height:1.65;" placeholder="တစ်ကြောင်းချင်း ရိုက်ထည့်ပါ...">၁၅ စက္ကန့်ထိ အခမဲ့ ထုတ်လို့ရတဲ့ AI ဗီဒီယို
+နှလုံးသားထဲက သံစဉ်လေးများ
+မင်းအနားမှာ အမြဲရှိချင်တယ်
+ဒီသီချင်းလေးက မင်းအတွက်ပါ</textarea>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                        <span id="manualLineCounter" style="font-size:11px; color:var(--text-muted); font-weight:600;">စာကြောင်း 1 / 4</span>
+                        <div style="display:flex; gap:8px;">
+                            <button id="btnPrevLine" type="button" class="neu-btn btn-xs">◀ ရှေ့</button>
+                            <button id="btnNextLine" type="button" class="neu-btn btn-xs">နောက် ▶</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: EMBOSS STYLE, ANIMATION & TEXT COLOR -->
+            <div id="tab-text" class="tab-panel">
+                <!-- 4 Emboss Styles -->
+                <div>
+                    <div class="field-label"><span>စာလုံး ကြွပုံစံ (4 Emboss Styles)</span></div>
+                    <div class="grid-2">
+                        <button type="button" class="neu-btn emboss-opt" data-emboss="soft">
+                            <small>Soft Emboss</small>
+                            <span class="emboss-demo demo-soft">မြန်မာစာ</span>
+                        </button>
+                        <button type="button" class="neu-btn emboss-opt active" data-emboss="deep">
+                            <small>Deep Emboss</small>
+                            <span class="emboss-demo demo-deep">မြန်မာစာ</span>
+                        </button>
+                        <button type="button" class="neu-btn emboss-opt" data-emboss="debossed">
+                            <small>Debossed</small>
+                            <span class="emboss-demo demo-debossed">မြန်မာစာ</span>
+                        </button>
+                        <button type="button" class="neu-btn emboss-opt" data-emboss="metallic">
+                            <small>Metallic Emboss</small>
+                            <span class="emboss-demo demo-metallic">မြန်မာစာ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 7 Text Entrance / Display Animation Styles -->
+                <div>
+                    <div class="field-label"><span>စာသားပေါ်တဲ့ စတိုင် (7 Animations)</span></div>
+                    <div class="grid-2" id="animPickerGrid">
+                        <button type="button" class="neu-btn btn-xs anim-opt active" data-anim="emboss-rise">Emboss Rise (ကြွတက်)</button>
+                        <button type="button" class="neu-btn btn-xs anim-opt" data-anim="fade-blur">Fade & Blur (မှိန်ပေါ်)</button>
+                        <button type="button" class="neu-btn btn-xs anim-opt" data-anim="slide-up">Slide Up (အောက်ကတက်)</button>
+                        <button type="button" class="neu-btn btn-xs anim-opt" data-anim="zoom-pop">Zoom Pop (ချဲ့ပေါ်)</button>
+                        <button type="button" class="neu-btn btn-xs anim-opt" data-anim="typewriter">Typewriter (တစ်လုံးချင်း)</button>
+                        <button type="button" class="neu-btn btn-xs anim-opt" data-anim="wave-bounce">Wave Bounce (လှိုင်းခုန်)</button>
+                        <button type="button" class="neu-btn btn-xs anim-opt" data-anim="glow-pulse" style="grid-column:span 2;">Glow Pulse (အလင်းလက်)</button>
+                    </div>
+                </div>
+
+                <!-- Text Color Picker + 8 Swatches -->
+                <div>
+                    <div class="field-label">
+                        <span>စာသားအရောင်</span>
+                        <span id="textColorLabel" style="font-size:11px;">Auto Surface</span>
+                    </div>
+                    <div class="swatch-row" id="textSwatches">
+                        <button type="button" class="swatch swatch-auto active" data-color="auto" title="Auto Surface"></button>
+                        <button type="button" class="swatch" data-color="#64748b" style="background:#64748b;" title="Slate Gray"></button>
+                        <button type="button" class="swatch" data-color="#1e3a5f" style="background:#1e3a5f;" title="Deep Navy"></button>
+                        <button type="button" class="swatch" data-color="#db2777" style="background:#db2777;" title="Rose Pink"></button>
+                        <button type="button" class="swatch" data-color="#059669" style="background:#059669;" title="Emerald"></button>
+                        <button type="button" class="swatch" data-color="#7c3aed" style="background:#7c3aed;" title="Royal Purple"></button>
+                        <button type="button" class="swatch" data-color="#d97706" style="background:#d97706;" title="Warm Gold"></button>
+                        <button type="button" class="swatch" data-color="#ffffff" style="background:#ffffff;" title="Crisp White"></button>
+                        <label class="color-picker-wrap" title="စိတ်ကြိုက်အရောင်ရွေးရန်">
+                            <input id="textColorInput" type="color" value="#4f6d9a">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Font Size Slider -->
+                <div>
+                    <div class="field-label">
+                        <span>စာလုံးအရွယ်အစား</span>
+                        <span id="fontSizeVal">54 px</span>
+                    </div>
+                    <input id="fontSizeSlider" type="range" class="neu-range" min="30" max="86" value="54">
+                </div>
+            </div>
+
+            <!-- TAB 3: WAVE STYLE & COLOR -->
+            <div id="tab-wave" class="tab-panel">
+                <!-- 4 Wave Styles -->
+                <div>
+                    <div class="field-label"><span>Audio Wave ပုံစံ (4 Styles)</span></div>
+                    <div class="grid-2">
+                        <button type="button" class="neu-btn btn-xs wave-opt active" data-wave="line">Smooth Wave Line</button>
+                        <button type="button" class="neu-btn btn-xs wave-opt" data-wave="bars">Soft Bars</button>
+                        <button type="button" class="neu-btn btn-xs wave-opt" data-wave="dual">Dual Mirror Wave</button>
+                        <button type="button" class="neu-btn btn-xs wave-opt" data-wave="ring">Beat Pulse Ring</button>
+                    </div>
+                </div>
+
+                <!-- Wave Color Picker + 8 Swatches -->
+                <div>
+                    <div class="field-label">
+                        <span>Wave အရောင်</span>
+                        <span id="waveColorLabel">#6b84a6</span>
+                    </div>
+                    <div class="swatch-row" id="waveSwatches">
+                        <button type="button" class="swatch active" data-color="#6b84a6" style="background:#6b84a6;" title="Ice Slate"></button>
+                        <button type="button" class="swatch" data-color="#2563eb" style="background:#2563eb;" title="Ocean Blue"></button>
+                        <button type="button" class="swatch" data-color="#e11d48" style="background:#e11d48;" title="Crimson Rose"></button>
+                        <button type="button" class="swatch" data-color="#10b981" style="background:#10b981;" title="Mint Emerald"></button>
+                        <button type="button" class="swatch" data-color="#8b5cf6" style="background:#8b5cf6;" title="Electric Violet"></button>
+                        <button type="button" class="swatch" data-color="#f59e0b" style="background:#f59e0b;" title="Sunset Gold"></button>
+                        <button type="button" class="swatch" data-color="#06b6d4" style="background:#06b6d4;" title="Cyan Glow"></button>
+                        <button type="button" class="swatch" data-color="#334155" style="background:#334155;" title="Graphite"></button>
+                        <label class="color-picker-wrap" title="စိတ်ကြိုက် Wave အရောင်">
+                            <input id="waveColorInput" type="color" value="#6b84a6">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Wave Gradient Toggle -->
+                <div class="neu-well toggle-row">
+                    <span>Wave အရောင်ပြေး (Gradient) ဖွင့်မယ်</span>
+                    <label class="switch">
+                        <input id="toggleWaveGradient" type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- TAB 4: ASPECT RATIO, THEME & EXTRAS -->
+            <div id="tab-stage" class="tab-panel">
+                <!-- Aspect Ratio -->
+                <div>
+                    <div class="field-label"><span>Video အချိုးအစား (Aspect Ratio)</span></div>
+                    <div class="grid-3">
+                        <button type="button" class="neu-btn btn-xs ratio-opt active" data-ratio="9:16">9:16<br><small style="font-weight:500; opacity:0.75;">TikTok/Reels</small></button>
+                        <button type="button" class="neu-btn btn-xs ratio-opt" data-ratio="1:1">1:1<br><small style="font-weight:500; opacity:0.75;">Square</small></button>
+                        <button type="button" class="neu-btn btn-xs ratio-opt" data-ratio="16:9">16:9<br><small style="font-weight:500; opacity:0.75;">YouTube</small></button>
+                    </div>
+                </div>
+
+                <!-- Card Theme -->
+                <div>
+                    <div class="field-label"><span>နောက်ခံ Theme ရွေးချယ်ရန်</span></div>
+                    <div class="grid-3">
+                        <button type="button" class="neu-btn btn-xs theme-opt active" data-theme="light">Classic Light</button>
+                        <button type="button" class="neu-btn btn-xs theme-opt" data-theme="cream">Warm Cream</button>
+                        <button type="button" class="neu-btn btn-xs theme-opt" data-theme="dark">Dark Neu</button>
+                    </div>
+                </div>
+
+                <!-- Optional Progress Bar & Timestamp inside Video -->
+                <div class="neu-well toggle-row">
+                    <span>Video ထဲမှာ Progress Bar & အချိန်ပြမယ်</span>
+                    <label class="switch">
+                        <input id="toggleCanvasProgress" type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <!-- =========================================================
+         GITHUB PAGES & PWA SETUP MODAL
+    ========================================================= -->
+    <div id="pwaModal" class="modal-backdrop" role="dialog" aria-modal="true">
+        <div class="neu-card modal-box">
+            <div class="modal-header">
+                <h2>GitHub Pages & PWA Install လမ်းညွှန်</h2>
+                <button id="btnClosePwaModal" type="button" class="neu-btn btn-xs">✕</button>
+            </div>
+            <p style="margin:0; font-size:12.5px; color:var(--text-muted); line-height:1.6;">
+                ဒီ Web App ကို GitHub Pages ပေါ်တင်ပြီး ဖုန်းထဲမှာ App အဖြစ် Install လုပ်နိုင်ဖို့ အောက်က ဖိုင် ၂ ခုကို Download ဆွဲပြီး <b>index.html</b> နဲ့အတူ တင်ပေးပါ။
+            </p>
+            <div class="grid-2">
+                <button id="btnDlManifest" type="button" class="neu-btn btn-sm">
+                    <span>⬇ manifest.json</span>
+                </button>
+                <button id="btnDlSw" type="button" class="neu-btn btn-sm">
+                    <span>⬇ sw.js</span>
+                </button>
+            </div>
+            <div class="neu-well" style="padding:12px 14px;">
+                <strong style="font-size:12.5px; display:block; margin-bottom:6px;">GitHub မှာ တင်နည်း (အဆင့်ဆင့်)</strong>
+                <ol class="checklist">
+                    <li>GitHub မှာ Repository အသစ်တစ်ခု (Public) ဖန်တီးပါ။</li>
+                    <li>ဒီ HTML ဖိုင်ကို <b>index.html</b> အမည်နဲ့ ထည့်ပါ။</li>
+                    <li>အပေါ်က Download ဆွဲထားတဲ့ <b>manifest.json</b> နဲ့ <b>sw.js</b> ကိုပါ တစ်ခါတည်း Upload တင်ပါ။</li>
+                    <li>Repository &gt; <b>Settings</b> &gt; <b>Pages</b> &gt; Branch ကို <b>main</b> ရွေးပြီး Save နှိပ်ပါ။</li>
+                    <li>ထွက်လာတဲ့ GitHub Pages လင့်ခ်ကို Chrome/Safari နဲ့ဖွင့်ပြီး <b>App Install</b> (သို့) <b>Add to Home Screen</b> နှိပ်သုံးနိုင်ပါပြီ။</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Burmese Neumorphic Emboss Lyric & Audio Wave Video Studio
+         * Complete single-file WYSIWYG Canvas renderer, SRT parser, Web Audio API
+         * visualizer, MediaRecorder video exporter, and PWA manager.
+         */
+        (() => {
+            'use strict';
+
+            /* =========================================================
+               PWA Manifest & Service Worker Setup
+            ========================================================= */
+            const APP_ICON_SVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23e8edf5'/%3E%3Crect x='56' y='56' width='400' height='400' rx='84' fill='%23e8edf5' stroke='%23ffffff' stroke-width='10'/%3E%3Cpath d='M120 290 Q170 210 220 290 T320 290 T400 260' fill='none' stroke='%2364748b' stroke-width='22' stroke-linecap='round'/%3E%3Ctext x='256' y='215' text-anchor='middle' font-family='sans-serif' font-weight='800' font-size='96' fill='%2364748b'%3E%E1%80%99%E1%80%BC%E1%80%94%E1%80%BA%3C/text%3E%3C/svg%3E";
+
+            const MANIFEST_JSON_OBJ = {
+                name: "Emboss Wave Studio",
+                short_name: "Emboss Studio",
+                description: "မြန်မာစာ Neumorphic Emboss နှင့် Audio Wave ဗီဒီယိုဖန်တီးစက်",
+                start_url: "./",
+                scope: "./",
+                display: "standalone",
+                background_color: "#e8edf5",
+                theme_color: "#e8edf5",
+                orientation: "portrait",
+                icons: [
+                    { src: APP_ICON_SVG, sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
+                    { src: APP_ICON_SVG, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+                ]
+            };
+
+            const SW_JS_CONTENT = `const CACHE_NAME = 'emboss-wave-studio-v1';
+const ASSETS = ['./', './index.html', './manifest.json'];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).catch(() => {})
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    fetch(event.request)
+      .then((res) => {
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone)).catch(() => {});
+        return res;
+      })
+      .catch(() => caches.match(event.request))
+  );
+});
+`;
+
+            // Register Service Worker safely when hosted on HTTPS / localhost
+            if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./sw.js').catch(() => {});
+                });
+            }
+
+            // Capture beforeinstallprompt for PWA installation
+            let deferredInstallPrompt = null;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredInstallPrompt = e;
+            });
+
+            /* =========================================================
+               Theme & Aspect Ratio Definitions
+            ========================================================= */
+            const THEMES = {
+                light: {
+                    bg: '#e8edf5',
+                    card: '#e8edf5',
+                    shadowLight: '#ffffff',
+                    shadowDark: '#c4cddb',
+                    wellBg: '#e8edf5',
+                    textMuted: '#64748b',
+                    textSubtle: '#8d9db5',
+                    surfaceText: '#e8edf5',
+                    debossFill: '#dce3ee',
+                    embossLight: 'rgba(255, 255, 255, 0.96)',
+                    embossDark: 'rgba(148, 163, 184, 0.92)',
+                    debossDark: 'rgba(130, 145, 168, 0.88)',
+                    debossLight: 'rgba(255, 255, 255, 0.95)',
+                    progressTrack: 'rgba(180, 192, 210, 0.35)'
+                },
+                cream: {
+                    bg: '#f2efe9',
+                    card: '#f2efe9',
+                    shadowLight: '#ffffff',
+                    shadowDark: '#d4cec2',
+                    wellBg: '#f2efe9',
+                    textMuted: '#78716c',
+                    textSubtle: '#a1988e',
+                    surfaceText: '#f2efe9',
+                    debossFill: '#e8e2d8',
+                    embossLight: 'rgba(255, 255, 255, 0.96)',
+                    embossDark: 'rgba(176, 167, 152, 0.92)',
+                    debossDark: 'rgba(154, 145, 130, 0.88)',
+                    debossLight: 'rgba(255, 255, 255, 0.96)',
+                    progressTrack: 'rgba(195, 187, 174, 0.38)'
+                },
+                dark: {
+                    bg: '#1f242d',
+                    card: '#1f242d',
+                    shadowLight: '#2b323f',
+                    shadowDark: '#13171d',
+                    wellBg: '#1c2129',
+                    textMuted: '#94a3b8',
+                    textSubtle: '#64748b',
+                    surfaceText: '#232934',
+                    debossFill: '#191e26',
+                    embossLight: 'rgba(62, 73, 92, 0.85)',
+                    embossDark: 'rgba(8, 10, 14, 0.95)',
+                    debossDark: 'rgba(7, 9, 13, 0.95)',
+                    debossLight: 'rgba(70, 82, 104, 0.65)',
+                    progressTrack: 'rgba(15, 20, 28, 0.65)'
+                }
+            };
+
+            const RATIOS = {
+                '9:16': { w: 720, h: 1280 },
+                '1:1':  { w: 1080, h: 1080 },
+                '16:9': { w: 1280, h: 720 }
+            };
+
+            /* =========================================================
+               DOM Elements
+            ========================================================= */
+            const audioEl = document.getElementById('audioEl');
+            const canvas = document.getElementById('studioCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const toastEl = document.getElementById('toast');
+            const recordHintEl = document.getElementById('recordHint');
+            const recBadge = document.getElementById('recBadge');
+            const recTimerEl = document.getElementById('recTimer');
+
+            // Transport
+            const seekTrack = document.getElementById('seekTrack');
+            const seekFill = document.getElementById('seekFill');
+            const timeCurrent = document.getElementById('timeCurrent');
+            const timeDuration = document.getElementById('timeDuration');
+            const btnPlayPause = document.getElementById('btnPlayPause');
+            const iconPlay = document.getElementById('iconPlay');
+            const iconPause = document.getElementById('iconPause');
+            const btnReplay = document.getElementById('btnReplay');
+            const btnMute = document.getElementById('btnMute');
+            const iconVolOn = document.getElementById('iconVolOn');
+            const iconVolOff = document.getElementById('iconVolOff');
+
+            // Export & Record
+            const btnRecordVideo = document.getElementById('btnRecordVideo');
+            const btnRecordLabel = document.getElementById('btnRecordLabel');
+            const btnAutoRecordFull = document.getElementById('btnAutoRecordFull');
+            const btnScreenRecordMode = document.getElementById('btnScreenRecordMode');
+            const downloadCard = document.getElementById('downloadCard');
+            const recordedVideoPreview = document.getElementById('recordedVideoPreview');
+            const directDownloadLink = document.getElementById('directDownloadLink');
+            const videoMetaInfo = document.getElementById('videoMetaInfo');
+            const btnCloseDownload = document.getElementById('btnCloseDownload');
+
+            // Media & SRT
+            const audioInput = document.getElementById('audioInput');
+            const audioFileName = document.getElementById('audioFileName');
+            const srtInput = document.getElementById('srtInput');
+            const srtFileName = document.getElementById('srtFileName');
+            const srtCountBadge = document.getElementById('srtCountBadge');
+            const btnClearSrt = document.getElementById('btnClearSrt');
+            const srtPreviewSection = document.getElementById('srtPreviewSection');
+            const btnToggleCueList = document.getElementById('btnToggleCueList');
+            const srtCueListWrap = document.getElementById('srtCueListWrap');
+            const cueChevron = document.getElementById('cueChevron');
+
+            // Text & Manual Lyrics
+            const inputSongTitle = document.getElementById('inputSongTitle');
+            const inputSubtitle = document.getElementById('inputSubtitle');
+            const inputManualLines = document.getElementById('inputManualLines');
+            const manualIntervalSelect = document.getElementById('manualIntervalSelect');
+            const manualLineCounter = document.getElementById('manualLineCounter');
+            const btnPrevLine = document.getElementById('btnPrevLine');
+            const btnNextLine = document.getElementById('btnNextLine');
+
+            // Style Controls
+            const textColorInput = document.getElementById('textColorInput');
+            const textColorLabel = document.getElementById('textColorLabel');
+            const fontSizeSlider = document.getElementById('fontSizeSlider');
+            const fontSizeVal = document.getElementById('fontSizeVal');
+            const waveColorInput = document.getElementById('waveColorInput');
+            const waveColorLabel = document.getElementById('waveColorLabel');
+            const toggleWaveGradient = document.getElementById('toggleWaveGradient');
+            const toggleCanvasProgress = document.getElementById('toggleCanvasProgress');
+
+            // PWA Modal
+            const btnInstallApp = document.getElementById('btnInstallApp');
+            const btnOpenPwaModal = document.getElementById('btnOpenPwaModal');
+            const pwaModal = document.getElementById('pwaModal');
+            const btnClosePwaModal = document.getElementById('btnClosePwaModal');
+            const btnDlManifest = document.getElementById('btnDlManifest');
+            const btnDlSw = document.getElementById('btnDlSw');
+
+            /* =========================================================
+               Application State
+            ========================================================= */
+            const state = {
+                ratio: '9:16',
+                theme: 'light',
+                embossStyle: 'deep',       // soft | deep | debossed | metallic
+                animStyle: 'emboss-rise',  // emboss-rise | fade-blur | slide-up | zoom-pop | typewriter | wave-bounce | glow-pulse
+                textColor: 'auto',         // 'auto' or hex
+                fontSize: 54,
+                waveStyle: 'line',         // line | bars | dual | ring
+                waveColor: '#6b84a6',
+                waveGradient: true,
+                showCanvasProgress: true,
+
+                audioLoaded: false,
+                audioUrl: null,
+                isPlaying: false,
+                isMuted: false,
+                isSeeking: false,
+
+                // SRT Cues: [{ start, end, text }]
+                srtCues: [],
+                activeCueIndex: -1,
+
+                // Manual Lines Fallback
+                manualLines: [],
+                manualIndex: 0,
+                manualSeconds: 5,
+                lastManualAdvanceTime: 0,
+
+                // Current Displayed Text & Animation Clock
+                displayedText: '',
+                textChangeTimestamp: performance.now(),
+
+                // Recording State
+                isRecording: false,
+                autoRecordFull: false,
+                mediaRecorder: null,
+                recordedChunks: [],
+                recordStartTime: 0,
+                recordedVideoUrl: null,
+
+                // Screen Record Mode
+                isScreenRecordMode: false,
+                lastBgTap: 0
+            };
+
+            /* =========================================================
+               Web Audio API (Single MediaElementAudioSourceNode Pattern)
+            ========================================================= */
+            let audioCtx = null;
+            let analyser = null;
+            let sourceNode = null;
+            let audioDest = null;
+            let timeData = null;
+            let freqData = null;
+
+            function ensureAudioEngine() {
+                try {
+                    if (!audioCtx) {
+                        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                        audioCtx = new AudioCtx();
+                        analyser = audioCtx.createAnalyser();
+                        analyser.fftSize = 1024;
+                        analyser.smoothingTimeConstant = 0.82;
+
+                        audioDest = audioCtx.createMediaStreamDestination();
+                        sourceNode = audioCtx.createMediaElementSource(audioEl);
+
+                        // Route: audioEl -> analyser -> speakers + MediaStreamDestination
+                        sourceNode.connect(analyser);
+                        analyser.connect(audioCtx.destination);
+                        analyser.connect(audioDest);
+
+                        timeData = new Uint8Array(analyser.frequencyBinCount);
+                        freqData = new Uint8Array(analyser.frequencyBinCount);
+                    }
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                } catch (err) {
+                    console.error('AudioContext error:', err);
+                }
+            }
+
+            /* =========================================================
+               Utilities: Toast, Time Formatting, Color Manipulation, Graphemes
+            ========================================================= */
+            let toastTimer = null;
+            function showToast(msg) {
+                toastEl.textContent = msg;
+                toastEl.classList.add('show');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+            }
+
+            function formatTime(sec) {
+                if (!isFinite(sec) || sec < 0) return '0:00';
+                const m = Math.floor(sec / 60);
+                const s = Math.floor(sec % 60);
+                return `${m}:${s < 10 ? '0' : ''}${s}`;
+            }
+
+            function hexToRgb(hex) {
+                const clean = hex.replace('#', '');
+                const full = clean.length === 3
+                    ? clean.split('').map(c => c + c).join('')
+                    : clean;
+                const num = parseInt(full, 16);
+                if (isNaN(num)) return { r: 107, g: 132, b: 166 };
+                return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+            }
+
+            function adjustHex(hex, amount) {
+                const { r, g, b } = hexToRgb(hex);
+                const clamp = v => Math.max(0, Math.min(255, Math.round(v)));
+                return `rgb(${clamp(r + amount)}, ${clamp(g + amount)}, ${clamp(b + amount)})`;
+            }
+
+            function hexWithAlpha(hex, alpha) {
+                const { r, g, b } = hexToRgb(hex);
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            }
+
+            // Burmese-safe grapheme splitter (keeps combining vowel signs & stacks intact)
+            const graphemeSegmenter = (typeof Intl !== 'undefined' && Intl.Segmenter)
+                ? new Intl.Segmenter('my', { granularity: 'grapheme' })
+                : null;
+
+            function splitGraphemes(str) {
+                if (graphemeSegmenter) {
+                    return Array.from(graphemeSegmenter.segment(str), s => s.segment);
+                }
+                return Array.from(str);
+            }
+
+            /* =========================================================
+               SRT Subtitle Parser
+            ========================================================= */
+            function parseSrtTimeToSeconds(timeStr) {
+                const cleaned = timeStr.trim().replace(',', '.');
+                const parts = cleaned.split(':');
+                if (parts.length === 3) {
+                    return parseFloat(parts[0]) * 3600 + parseFloat(parts[1]) * 60 + parseFloat(parts[2]);
+                }
+                if (parts.length === 2) {
+                    return parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
+                }
+                return parseFloat(cleaned) || 0;
+            }
+
+            function parseSRT(rawText) {
+                const normalized = rawText.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+                const blocks = normalized.split(/\n{2,}/);
+                const cues = [];
+                const timeRegex = /(\d{1,2}:\d{2}:\d{2}[.,]\d{1,3}|\d{1,2}:\d{2}[.,]\d{1,3})\s*-->\s*(\d{1,2}:\d{2}:\d{2}[.,]\d{1,3}|\d{1,2}:\d{2}[.,]\d{1,3})/;
+
+                for (const block of blocks) {
+                    const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+                    if (lines.length < 2) continue;
+
+                    let timeLineIdx = lines.findIndex(l => timeRegex.test(l));
+                    if (timeLineIdx === -1) continue;
+
+                    const match = lines[timeLineIdx].match(timeRegex);
+                    const start = parseSrtTimeToSeconds(match[1]);
+                    const end = parseSrtTimeToSeconds(match[2]);
+                    const textLines = lines.slice(timeLineIdx + 1)
+                        .map(l => l.replace(/<[^>]+>/g, '').trim())
+                        .filter(Boolean);
+
+                    if (textLines.length > 0 && end > start) {
+                        cues.push({ start, end, text: textLines.join('\n') });
+                    }
+                }
+                return cues.sort((a, b) => a.start - b.start);
+            }
+
+            function renderSrtCueList() {
+                srtCueListWrap.innerHTML = '';
+                state.srtCues.forEach((cue, idx) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'cue-item' + (idx === state.activeCueIndex ? ' active' : '');
+                    btn.dataset.idx = idx;
+                    btn.innerHTML = `<span class="cue-time">${formatTime(cue.start)} → ${formatTime(cue.end)}</span><span>${cue.text.replace(/\n/g, ' ')}</span>`;
+                    btn.addEventListener('click', () => {
+                        if (state.audioLoaded) {
+                            audioEl.currentTime = cue.start + 0.02;
+                        }
+                        setActiveText(cue.text, idx);
+                    });
+                    srtCueListWrap.appendChild(btn);
+                });
+            }
+
+            function highlightActiveCueInList() {
+                if (state.srtCues.length === 0) return;
+                const items = srtCueListWrap.querySelectorAll('.cue-item');
+                items.forEach((el, idx) => {
+                    el.classList.toggle('active', idx === state.activeCueIndex);
+                });
+            }
+
+            /* =========================================================
+               Manual Lines & Active Text Synchronization
+            ========================================================= */
+            function parseManualLines() {
+                state.manualLines = inputManualLines.value
+                    .split('\n')
+                    .map(l => l.trim())
+                    .filter(Boolean);
+                if (state.manualLines.length === 0) {
+                    state.manualLines = ['မြန်မာစာ Emboss Studio'];
+                }
+                if (state.manualIndex >= state.manualLines.length) {
+                    state.manualIndex = 0;
+                }
+                updateManualCounter();
+                if (state.srtCues.length === 0) {
+                    setActiveText(state.manualLines[state.manualIndex], -1, false);
+                }
+            }
+
+            function updateManualCounter() {
+                manualLineCounter.textContent = `စာကြောင်း ${state.manualIndex + 1} / ${state.manualLines.length}`;
+            }
+
+            function setActiveText(newText, cueIdx = -1, triggerAnim = true) {
+                const changed = newText !== state.displayedText;
+                state.displayedText = newText;
+                if (cueIdx !== state.activeCueIndex) {
+                    state.activeCueIndex = cueIdx;
+                    highlightActiveCueInList();
+                }
+                if (changed && triggerAnim) {
+                    state.textChangeTimestamp = performance.now();
+                }
+            }
+
+            function syncTextWithPlayback(now) {
+                // Priority 1: SRT Cues
+                if (state.srtCues.length > 0) {
+                    const t = audioEl.currentTime || 0;
+                    let foundIdx = -1;
+                    for (let i = 0; i < state.srtCues.length; i++) {
+                        if (t >= state.srtCues[i].start && t <= state.srtCues[i].end) {
+                            foundIdx = i;
+                            break;
+                        }
+                    }
+                    if (foundIdx !== -1) {
+                        setActiveText(state.srtCues[foundIdx].text, foundIdx, true);
+                    } else if (!state.isPlaying && t === 0 && state.srtCues[0]) {
+                        setActiveText(state.srtCues[0].text, 0, false);
+                    } else if (state.isPlaying) {
+                        setActiveText('', -1, false);
+                    }
+                    return;
+                }
+
+                // Priority 2: Manual Lines auto-advance when playing
+                if (state.isPlaying && state.manualLines.length > 1) {
+                    if (now - state.lastManualAdvanceTime >= state.manualSeconds * 1000) {
+                        state.lastManualAdvanceTime = now;
+                        state.manualIndex = (state.manualIndex + 1) % state.manualLines.length;
+                        updateManualCounter();
+                        setActiveText(state.manualLines[state.manualIndex], -1, true);
+                    }
+                }
+            }
+
+            /* =========================================================
+               Canvas Drawing Helpers
+            ========================================================= */
+            function roundedRect(c, x, y, w, h, r) {
+                const rad = Math.min(r, w / 2, h / 2);
+                c.beginPath();
+                c.moveTo(x + rad, y);
+                c.arcTo(x + w, y, x + w, y + h, rad);
+                c.arcTo(x + w, y + h, x, y + h, rad);
+                c.arcTo(x, y + h, x, y, rad);
+                c.arcTo(x, y, x + w, y, rad);
+                c.closePath();
+            }
+
+            function drawNeuCard(c, x, y, w, h, r, theme) {
+                // Dark bottom-right shadow
+                c.save();
+                c.shadowColor = theme.shadowDark;
+                c.shadowBlur = 32;
+                c.shadowOffsetX = 14;
+                c.shadowOffsetY = 14;
+                c.fillStyle = theme.card;
+                roundedRect(c, x, y, w, h, r);
+                c.fill();
+                c.restore();
+
+                // Light top-left shadow
+                c.save();
+                c.shadowColor = theme.shadowLight;
+                c.shadowBlur = 32;
+                c.shadowOffsetX = -14;
+                c.shadowOffsetY = -14;
+                c.fillStyle = theme.card;
+                roundedRect(c, x, y, w, h, r);
+                c.fill();
+                c.restore();
+            }
+
+            function drawNeuWell(c, x, y, w, h, r, theme) {
+                c.save();
+                roundedRect(c, x, y, w, h, r);
+                c.fillStyle = theme.wellBg;
+                c.fill();
+                c.clip();
+
+                // Inner dark top-left shadow
+                c.lineWidth = 10;
+                c.strokeStyle = theme.shadowDark;
+                c.shadowColor = theme.shadowDark;
+                c.shadowBlur = 14;
+                c.shadowOffsetX = 6;
+                c.shadowOffsetY = 6;
+                roundedRect(c, x - 4, y - 4, w + 8, h + 8, r + 2);
+                c.stroke();
+
+                // Inner light bottom-right highlight
+                c.strokeStyle = theme.shadowLight;
+                c.shadowColor = theme.shadowLight;
+                c.shadowBlur = 14;
+                c.shadowOffsetX = -6;
+                c.shadowOffsetY = -6;
+                roundedRect(c, x - 4, y - 4, w + 8, h + 8, r + 2);
+                c.stroke();
+                c.restore();
+            }
+
+            /**
+             * Multi-line text wrapper that respects explicit newlines and wraps
+             * both space-separated words and long Burmese phrases cleanly.
+             */
+            function wrapCanvasText(c, text, maxWidth) {
+                if (!text) return [];
+                const paragraphs = text.split('\n');
+                const lines = [];
+
+                for (const para of paragraphs) {
+                    if (!para.trim()) continue;
+                    const words = para.split(' ');
+                    let currentLine = '';
+
+                    for (let i = 0; i < words.length; i++) {
+                        const word = words[i];
+                        const testLine = currentLine ? `${currentLine} ${word}` : word;
+                        if (c.measureText(testLine).width <= maxWidth) {
+                            currentLine = testLine;
+                        } else {
+                            if (currentLine) {
+                                lines.push(currentLine);
+                                currentLine = '';
+                            }
+                            // If a single Burmese token without spaces is wider than maxWidth, split by graphemes
+                            if (c.measureText(word).width > maxWidth) {
+                                const graphemes = splitGraphemes(word);
+                                let chunk = '';
+                                for (const g of graphemes) {
+                                    if (c.measureText(chunk + g).width > maxWidth && chunk) {
+                                        lines.push(chunk);
+                                        chunk = g;
+                                    } else {
+                                        chunk += g;
+                                    }
+                                }
+                                currentLine = chunk;
+                            } else {
+                                currentLine = word;
+                            }
+                        }
+                    }
+                    if (currentLine) lines.push(currentLine);
+                }
+                return lines;
+            }
+
+            /* =========================================================
+               Canvas Emboss Text Renderer (4 Styles + 7 Animations)
+            ========================================================= */
+            function drawEmbossedLyrics(c, centerX, centerY, maxWidth, now, bassEnergy, theme) {
+                const rawText = state.displayedText;
+                if (!rawText) return;
+
+                const elapsed = Math.max(0, now - state.textChangeTimestamp);
+                const duration = 680;
+                const progress = Math.min(1, elapsed / duration);
+                const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+
+                // Determine visible string (Typewriter slices by Burmese graphemes)
+                let renderText = rawText;
+                if (state.animStyle === 'typewriter') {
+                    const graphemes = splitGraphemes(rawText);
+                    const totalMs = Math.min(2200, Math.max(500, graphemes.length * 48));
+                    const count = Math.max(1, Math.ceil((Math.min(elapsed, totalMs) / totalMs) * graphemes.length));
+                    renderText = graphemes.slice(0, count).join('');
+                }
+
+                // Scale font nicely for aspect ratio
+                const ratioScale = state.ratio === '16:9' ? 0.92 : (state.ratio === '1:1' ? 1.05 : 1.0);
+                const fontSize = Math.round(state.fontSize * ratioScale);
+                const lineHeight = Math.round(fontSize * 1.48);
+
+                c.save();
+                c.font = `800 ${fontSize}px "Noto Sans Myanmar", "Padauk", sans-serif`;
+                c.textAlign = 'center';
+                c.textBaseline = 'middle';
+
+                // Wrap full text first so layout doesn't jump during typewriter
+                const fullLines = wrapCanvasText(c, rawText, maxWidth);
+                const visibleLines = state.animStyle === 'typewriter'
+                    ? wrapCanvasText(c, renderText, maxWidth)
+                    : fullLines;
+
+                const totalHeight = fullLines.length * lineHeight;
+                const startY = centerY - totalHeight / 2 + lineHeight / 2;
+
+                // Compute Animation Transforms
+                let offsetY = 0;
+                let scale = 1;
+                let alpha = 1;
+                let depthMul = 1;
+                let blurPx = 0;
+                let glowStrength = 0;
+
+                switch (state.animStyle) {
+                    case 'emboss-rise':
+                        offsetY = (1 - easeOutCubic) * 28;
+                        scale = 0.92 + 0.08 * easeOutCubic;
+                        alpha = Math.min(1, progress * 1.45);
+                        depthMul = 0.2 + 0.8 * easeOutCubic;
+                        break;
+                    case 'fade-blur':
+                        alpha = easeOutCubic;
+                        blurPx = (1 - easeOutCubic) * 10;
+                        break;
+                    case 'slide-up':
+                        offsetY = (1 - easeOutCubic) * 64;
+                        alpha = Math.min(1, progress * 1.4);
+                        break;
+                    case 'zoom-pop': {
+                        // Elastic spring pop
+                        const c4 = (2 * Math.PI) / 3;
+                        const spring = progress === 0 ? 0 : progress === 1 ? 1
+                            : Math.pow(2, -10 * progress) * Math.sin((progress * 10 - 0.75) * c4) + 1;
+                        scale = 0.65 + 0.35 * spring;
+                        alpha = Math.min(1, progress * 2);
+                        break;
+                    }
+                    case 'wave-bounce': {
+                        const floatY = Math.sin(now * 0.0045) * (6 + bassEnergy * 14);
+                        offsetY = floatY;
+                        scale = 1 + bassEnergy * 0.055;
+                        break;
+                    }
+                    case 'glow-pulse':
+                        glowStrength = 10 + bassEnergy * 28 + Math.sin(now * 0.005) * 6;
+                        scale = 1 + bassEnergy * 0.025;
+                        break;
+                    case 'typewriter':
+                    default:
+                        break;
+                }
+
+                c.translate(centerX, centerY + offsetY);
+                c.scale(scale, scale);
+                c.translate(-centerX, -centerY);
+                c.globalAlpha = alpha;
+
+                if (blurPx > 0.2 && 'filter' in c) {
+                    c.filter = `blur(${blurPx.toFixed(1)}px)`;
+                }
+
+                const baseFill = state.textColor === 'auto' ? theme.surfaceText : state.textColor;
+
+                visibleLines.forEach((line, idx) => {
+                    const y = startY + idx * lineHeight;
+
+                    // Optional Glow Pulse Halo
+                    if (glowStrength > 0) {
+                        c.save();
+                        const glowHex = state.textColor === 'auto' ? state.waveColor : state.textColor;
+                        c.shadowColor = hexWithAlpha(glowHex, 0.75);
+                        c.shadowBlur = glowStrength;
+                        c.fillStyle = hexWithAlpha(glowHex, 0.35);
+                        c.fillText(line, centerX, y);
+                        c.restore();
+                    }
+
+                    if (state.embossStyle === 'soft') {
+                        // Top-left white highlight
+                        c.save();
+                        c.shadowColor = theme.embossLight;
+                        c.shadowBlur = 7 * depthMul;
+                        c.shadowOffsetX = -3.5 * depthMul;
+                        c.shadowOffsetY = -3.5 * depthMul;
+                        c.fillStyle = baseFill;
+                        c.fillText(line, centerX, y);
+                        c.restore();
+
+                        // Bottom-right soft shadow
+                        c.save();
+                        c.shadowColor = theme.embossDark;
+                        c.shadowBlur = 9 * depthMul;
+                        c.shadowOffsetX = 4 * depthMul;
+                        c.shadowOffsetY = 4 * depthMul;
+                        c.fillStyle = baseFill;
+                        c.fillText(line, centerX, y);
+                        c.restore();
+                    }
+                    else if (state.embossStyle === 'deep') {
+                        // Strong bottom-right deep shadow
+                        c.save();
+                        c.shadowColor = theme.embossDark;
+                        c.shadowBlur = 16 * depthMul;
+                        c.shadowOffsetX = 7 * depthMul;
+                        c.shadowOffsetY = 8 * depthMul;
+                        c.fillStyle = baseFill;
+                        c.fillText(line, centerX, y);
+                        c.restore();
+
+                        // Crisp near edge shadow
+                        c.save();
+                        c.shadowColor = theme.debossDark;
+                        c.shadowBlur = 4 * depthMul;
+                        c.shadowOffsetX = 2.5 * depthMul;
+                        c.shadowOffsetY = 2.5 * depthMul;
+                        c.fillStyle = baseFill;
+                        c.fillText(line, centerX, y);
+                        c.restore();
+
+                        // Bright top-left highlight
+                        c.save();
+                        c.shadowColor = theme.embossLight;
+                        c.shadowBlur = 10 * depthMul;
+                        c.shadowOffsetX = -5 * depthMul;
+                        c.shadowOffsetY = -5 * depthMul;
+                        c.fillStyle = baseFill;
+                        c.fillText(line, centerX, y);
+                        c.restore();
+                    }
+                    else if (state.embossStyle === 'debossed') {
+                        const pressFill = state.textColor === 'auto' ? theme.debossFill : adjustHex(state.textColor, -14);
+
+                        // Top-left dark pressed shadow
+                        c.save();
+                        c.shadowColor = theme.debossDark;
+                        c.shadowBlur = 3.5 * depthMul;
+                        c.shadowOffsetX = -2.5 * depthMul;
+                        c.shadowOffsetY = -2.5 * depthMul;
+                        c.fillStyle = pressFill;
+                        c.fillText(line, centerX, y);
+                        c.restore();
+
+                        // Bottom-right bright rim highlight
+                        c.save();
+                        c.shadowColor = theme.debossLight;
+                        c.shadowBlur = 3.5 * depthMul;
+                        c.shadowOffsetX = 2.5 * depthMul;
+                        c.shadowOffsetY = 2.5 * depthMul;
+                        c.fillStyle = pressFill;
+                        c.fillText(line, centerX, y);
+                        c.restore();
+                    }
+                    else if (state.embossStyle === 'metallic') {
+                        // Crisp dark drop shadow
+                        c.save();
+                        c.shadowColor = 'rgba(45, 58, 78, 0.58)';
+                        c.shadowBlur = 7 * depthMul;
+                        c.shadowOffsetX = 4 * depthMul;
+                        c.shadowOffsetY = 5 * depthMul;
+                        c.fillStyle = '#94a3b8';
+                        c.fillText(line, centerX, y);
+                        c.restore();
+
+                        // Top-left bright bevel highlight
+                        c.save();
+                        c.shadowColor = 'rgba(255, 255, 255, 0.92)';
+                        c.shadowBlur = 3 * depthMul;
+                        c.shadowOffsetX = -2 * depthMul;
+                        c.shadowOffsetY = -2 * depthMul;
+
+                        const grad = c.createLinearGradient(0, y - fontSize * 0.55, 0, y + fontSize * 0.55);
+                        if (state.textColor === 'auto') {
+                            grad.addColorStop(0.0, '#ffffff');
+                            grad.addColorStop(0.42, '#cfd7e3');
+                            grad.addColorStop(0.54, '#7d8a9e');
+                            grad.addColorStop(1.0, '#e2e8f0');
+                        } else {
+                            grad.addColorStop(0.0, adjustHex(state.textColor, 95));
+                            grad.addColorStop(0.45, state.textColor);
+                            grad.addColorStop(0.55, adjustHex(state.textColor, -65));
+                            grad.addColorStop(1.0, adjustHex(state.textColor, 55));
+                        }
+                        c.fillStyle = grad;
+                        c.fillText(line, centerX, y);
+                        c.restore();
+                    }
+                });
+
+                c.restore();
+            }
+
+            /* =========================================================
+               Canvas Audio Waveform Visualizers (4 Styles)
+            ========================================================= */
+            let idlePhase = 0;
+
+            function getWaveStroke(c, x1, y1, x2, y2) {
+                if (!state.waveGradient) return state.waveColor;
+                const g = c.createLinearGradient(x1, y1, x2, y2);
+                g.addColorStop(0, adjustHex(state.waveColor, 55));
+                g.addColorStop(0.5, state.waveColor);
+                g.addColorStop(1, adjustHex(state.waveColor, -35));
+                return g;
+            }
+
+            function drawSmoothCurve(c, pts, ox, oy, stroke, width) {
+                if (pts.length < 2) return;
+                c.save();
+                c.beginPath();
+                c.moveTo(pts[0].x + ox, pts[0].y + oy);
+                for (let i = 1; i < pts.length - 1; i++) {
+                    const xc = (pts[i].x + pts[i + 1].x) / 2 + ox;
+                    const yc = (pts[i].y + pts[i + 1].y) / 2 + oy;
+                    c.quadraticCurveTo(pts[i].x + ox, pts[i].y + oy, xc, yc);
+                }
+                const last = pts[pts.length - 1];
+                c.lineTo(last.x + ox, last.y + oy);
+                c.strokeStyle = stroke;
+                c.lineWidth = width;
+                c.lineCap = 'round';
+                c.lineJoin = 'round';
+                c.stroke();
+                c.restore();
+            }
+
+            function drawVisualizer(c, x, y, w, h, isLive, bassEnergy, theme) {
+                c.save();
+                roundedRect(c, x, y, w, h, 24);
+                c.clip();
+
+                const midY = y + h / 2;
+
+                if (state.waveStyle === 'line') {
+                    // Subtle center baseline
+                    c.beginPath();
+                    c.moveTo(x + 24, midY);
+                    c.lineTo(x + w - 24, midY);
+                    c.strokeStyle = hexWithAlpha(state.waveColor, 0.22);
+                    c.lineWidth = 1.5;
+                    c.stroke();
+
+                    const pts = [];
+                    const samples = 76;
+                    const amp = h * 0.36;
+                    for (let i = 0; i <= samples; i++) {
+                        const t = i / samples;
+                        const px = x + 22 + t * (w - 44);
+                        const env = Math.sin(t * Math.PI);
+                        let val = 0;
+                        if (isLive && timeData) {
+                            const idx = Math.floor(t * (timeData.length - 1));
+                            val = ((timeData[idx] - 128) / 128) * amp * 1.55 * env;
+                        } else {
+                            val = (Math.sin(t * Math.PI * 3.5 + idlePhase) * 0.55 +
+                                   Math.sin(t * Math.PI * 6 - idlePhase * 1.3) * 0.25) * (amp * 0.32) * env;
+                        }
+                        pts.push({ x: px, y: midY + val });
+                    }
+
+                    drawSmoothCurve(c, pts, -2, -2, theme.embossLight, 5);
+                    drawSmoothCurve(c, pts, 3, 4, theme.embossDark, 5);
+                    drawSmoothCurve(c, pts, 0, 0, getWaveStroke(c, x, y, x + w, y), 4.5);
+                }
+                else if (state.waveStyle === 'bars') {
+                    const barCount = 34;
+                    const padX = 28;
+                    const usableW = w - padX * 2;
+                    const gap = 7;
+                    const barW = Math.max(4, (usableW - gap * (barCount - 1)) / barCount);
+                    const maxH = h * 0.76;
+
+                    for (let i = 0; i < barCount; i++) {
+                        const norm = i / (barCount - 1);
+                        const weight = Math.sin(norm * Math.PI);
+                        let lvl = 0;
+                        if (isLive && freqData) {
+                            const dist = Math.abs(i - (barCount - 1) / 2) / ((barCount - 1) / 2);
+                            const bin = Math.floor(dist * (freqData.length * 0.34));
+                            lvl = (freqData[bin] / 255) * (0.58 + 0.42 * weight);
+                        } else {
+                            lvl = (0.14 + 0.14 * Math.sin(idlePhase * 1.3 + i * 0.42)) * (0.45 + 0.55 * weight);
+                        }
+                        const bh = Math.max(10, lvl * maxH);
+                        const bx = x + padX + i * (barW + gap);
+                        const by = midY - bh / 2;
+
+                        c.save();
+                        c.shadowColor = theme.embossDark;
+                        c.shadowBlur = 6;
+                        c.shadowOffsetX = 3;
+                        c.shadowOffsetY = 3;
+                        c.fillStyle = getWaveStroke(c, bx, by, bx, by + bh);
+                        roundedRect(c, bx, by, barW, bh, barW / 2);
+                        c.fill();
+                        c.restore();
+                    }
+                }
+                else if (state.waveStyle === 'dual') {
+                    const samples = 68;
+                    const amp = h * 0.36;
+                    const energy = isLive ? Math.max(0.16, bassEnergy * 1.25) : 0.24;
+
+                    // Soft filled mirror ribbon
+                    c.beginPath();
+                    c.moveTo(x + 18, midY);
+                    for (let i = 0; i <= samples; i++) {
+                        const t = i / samples;
+                        const px = x + 18 + t * (w - 36);
+                        const env = Math.sin(t * Math.PI);
+                        const dy = Math.sin(t * Math.PI * 4 - idlePhase * 1.7) * amp * energy * env;
+                        c.lineTo(px, midY + dy);
+                    }
+                    for (let i = samples; i >= 0; i--) {
+                        const t = i / samples;
+                        const px = x + 18 + t * (w - 36);
+                        const env = Math.sin(t * Math.PI);
+                        const dy = Math.sin(t * Math.PI * 4 - idlePhase * 1.7) * amp * energy * env;
+                        c.lineTo(px, midY - dy);
+                    }
+                    c.closePath();
+                    c.fillStyle = hexWithAlpha(state.waveColor, 0.24);
+                    c.fill();
+
+                    const ptsTop = [];
+                    const ptsBot = [];
+                    for (let i = 0; i <= samples; i++) {
+                        const t = i / samples;
+                        const px = x + 18 + t * (w - 36);
+                        const env = Math.sin(t * Math.PI);
+                        let liveMod = 0;
+                        if (isLive && timeData) {
+                            const idx = Math.floor(t * (timeData.length - 1));
+                            liveMod = ((timeData[idx] - 128) / 128) * amp * 0.9 * env;
+                        }
+                        const waveY = Math.sin(t * Math.PI * 3 + idlePhase * 2) * amp * energy * 0.72 * env;
+                        ptsTop.push({ x: px, y: midY + waveY + liveMod });
+                        ptsBot.push({ x: px, y: midY - waveY - liveMod * 0.55 });
+                    }
+
+                    drawSmoothCurve(c, ptsBot, 0, 0, hexWithAlpha(state.waveColor, 0.55), 3);
+                    drawSmoothCurve(c, ptsTop, 2, 3, theme.embossDark, 3.8);
+                    drawSmoothCurve(c, ptsTop, 0, 0, getWaveStroke(c, x, y, x + w, y), 3.6);
+                }
+                else if (state.waveStyle === 'ring') {
+                    const cx = x + w / 2;
+                    const cy = midY;
+                    const baseR = Math.min(w, h) * 0.27;
+                    const pulseR = baseR + bassEnergy * (h * 0.08);
+                    const rays = 44;
+
+                    // Outer soft pulse halo
+                    c.beginPath();
+                    c.arc(cx, cy, pulseR + 10 + bassEnergy * 12, 0, Math.PI * 2);
+                    c.strokeStyle = hexWithAlpha(state.waveColor, 0.25);
+                    c.lineWidth = 3;
+                    c.stroke();
+
+                    // Radial frequency spokes
+                    for (let i = 0; i < rays; i++) {
+                        const angle = (i / rays) * Math.PI * 2 - Math.PI / 2;
+                        let val = 0.18 + 0.14 * Math.sin(idlePhase * 1.8 + i * 0.5);
+                        if (isLive && freqData) {
+                            const bin = Math.floor((i / rays) * (freqData.length * 0.35));
+                            val = freqData[bin] / 255;
+                        }
+                        const len = 8 + val * (h * 0.22);
+                        const x1 = cx + Math.cos(angle) * pulseR;
+                        const y1 = cy + Math.sin(angle) * pulseR;
+                        const x2 = cx + Math.cos(angle) * (pulseR + len);
+                        const y2 = cy + Math.sin(angle) * (pulseR + len);
+
+                        c.beginPath();
+                        c.moveTo(x1, y1);
+                        c.lineTo(x2, y2);
+                        c.strokeStyle = getWaveStroke(c, x1, y1, x2, y2);
+                        c.lineWidth = 4;
+                        c.lineCap = 'round';
+                        c.stroke();
+                    }
+
+                    // Inner neumorphic core circle
+                    c.save();
+                    c.shadowColor = theme.embossDark;
+                    c.shadowBlur = 10;
+                    c.shadowOffsetX = 4;
+                    c.shadowOffsetY = 4;
+                    c.fillStyle = theme.card;
+                    c.beginPath();
+                    c.arc(cx, cy, pulseR - 4, 0, Math.PI * 2);
+                    c.fill();
+                    c.restore();
+
+                    c.beginPath();
+                    c.arc(cx, cy, pulseR - 4, 0, Math.PI * 2);
+                    c.strokeStyle = hexWithAlpha(state.waveColor, 0.65);
+                    c.lineWidth = 2.5;
+                    c.stroke();
+                }
+
+                c.restore();
+            }
+
+            /* =========================================================
+               Main Master Canvas Render Loop (WYSIWYG)
+            ========================================================= */
+            function renderFrame(now) {
+                requestAnimationFrame(renderFrame);
+
+                syncTextWithPlayback(now);
+
+                const W = canvas.width;
+                const H = canvas.height;
+                const theme = THEMES[state.theme] || THEMES.light;
+
+                // Update audio analyser data & bass energy
+                idlePhase += state.isPlaying ? 0.055 : 0.026;
+                const isLive = state.isPlaying && analyser && timeData && freqData;
+                let bassEnergy = 0;
+
+                if (isLive) {
+                    analyser.getByteTimeDomainData(timeData);
+                    analyser.getByteFrequencyData(freqData);
+                    let sum = 0;
+                    for (let i = 0; i < 24; i++) sum += freqData[i];
+                    bassEnergy = sum / (24 * 255);
+                }
+
+                // 1. Fill Background
+                ctx.fillStyle = theme.bg;
+                ctx.fillRect(0, 0, W, H);
+
+                // 2. Draw Main Outer Neumorphic Card
+                const pad = state.ratio === '16:9' ? 44 : 46;
+                const cardX = pad;
+                const cardY = pad;
+                const cardW = W - pad * 2;
+                const cardH = H - pad * 2;
+                drawNeuCard(ctx, cardX, cardY, cardW, cardH, 42, theme);
+
+                // 3. Draw Top Header inside Card (Status Dot + Song Title + Style Label)
+                const headerY = cardY + 52;
+                const headerLeftX = cardX + 46;
+                const headerRightX = cardX + cardW - 46;
+
+                ctx.save();
+                // Status Dot
+                ctx.beginPath();
+                ctx.arc(headerLeftX, headerY, 7, 0, Math.PI * 2);
+                ctx.fillStyle = state.isPlaying ? state.waveColor : theme.textSubtle;
+                ctx.fill();
+
+                // Song Title
+                ctx.font = '700 22px "Noto Sans Myanmar", "Padauk", sans-serif';
+                ctx.fillStyle = theme.textMuted;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                const songTitle = inputSongTitle.value.trim() || 'Emboss Wave Studio';
+                ctx.fillText(songTitle, headerLeftX + 20, headerY);
+
+                // Style Preset Badge
+                const styleNames = {
+                    soft: 'Soft Emboss',
+                    deep: 'Deep Emboss',
+                    debossed: 'Debossed',
+                    metallic: 'Metallic Emboss'
+                };
+                ctx.font = '600 18px "Noto Sans Myanmar", sans-serif';
+                ctx.fillStyle = theme.textSubtle;
+                ctx.textAlign = 'right';
+                ctx.fillText(styleNames[state.embossStyle], headerRightX, headerY);
+                ctx.restore();
+
+                // 4. Layout Regions (Text Stage + Waveform Well + Optional Progress Bar)
+                const progressH = state.showCanvasProgress ? 62 : 16;
+                const wellH = state.ratio === '16:9' ? 156 : (state.ratio === '1:1' ? 190 : 210);
+                const wellX = cardX + 44;
+                const wellW = cardW - 88;
+                const wellY = cardY + cardH - 42 - progressH - wellH;
+
+                const textAreaTop = headerY + 34;
+                const textAreaBottom = wellY - 54;
+                const textCenterY = (textAreaTop + textAreaBottom) / 2;
+
+                // 5. Draw Embossed Burmese Main Lyric / Subtitle
+                drawEmbossedLyrics(ctx, W / 2, textCenterY, cardW - 96, now, bassEnergy, theme);
+
+                // 6. Draw Optional Artist / Subtitle below main text
+                const subText = inputSubtitle.value.trim();
+                if (subText) {
+                    ctx.save();
+                    ctx.font = '600 24px "Noto Sans Myanmar", "Padauk", sans-serif';
+                    ctx.fillStyle = theme.textMuted;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(subText, W / 2, wellY - 30);
+                    ctx.restore();
+                }
+
+                // 7. Draw Inset Waveform Well & Active Visualizer
+                drawNeuWell(ctx, wellX, wellY, wellW, wellH, 26, theme);
+                drawVisualizer(ctx, wellX, wellY, wellW, wellH, isLive, bassEnergy, theme);
+
+                // 8. Draw Optional Progress Bar & Timestamp inside Canvas
+                if (state.showCanvasProgress) {
+                    const barY = wellY + wellH + 28;
+                    const barH = 12;
+                    const cur = audioEl.currentTime || 0;
+                    const dur = audioEl.duration || 0;
+                    const pct = dur > 0 ? Math.min(1, cur / dur) : 0;
+
+                    ctx.save();
+                    roundedRect(ctx, wellX, barY, wellW, barH, 6);
+                    ctx.fillStyle = theme.progressTrack;
+                    ctx.fill();
+
+                    if (pct > 0.005) {
+                        roundedRect(ctx, wellX, barY, Math.max(12, wellW * pct), barH, 6);
+                        ctx.fillStyle = getWaveStroke(ctx, wellX, barY, wellX + wellW, barY);
+                        ctx.fill();
+                    }
+
+                    ctx.font = '700 18px "Noto Sans Myanmar", sans-serif';
+                    ctx.fillStyle = theme.textSubtle;
+                    ctx.textBaseline = 'top';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(formatTime(cur), wellX + 2, barY + 20);
+                    ctx.textAlign = 'right';
+                    ctx.fillText(formatTime(dur), wellX + wellW - 2, barY + 20);
+                    ctx.restore();
+                }
+
+                // Update Recording Elapsed Timer
+                if (state.isRecording) {
+                    const recSec = Math.floor((Date.now() - state.recordStartTime) / 1000);
+                    const rm = Math.floor(recSec / 60);
+                    const rs = recSec % 60;
+                    recTimerEl.textContent = `${rm < 10 ? '0' : ''}${rm}:${rs < 10 ? '0' : ''}${rs}`;
+                }
+            }
+
+            /* =========================================================
+               Direct Video Recording & Download (MediaRecorder)
+            ========================================================= */
+            function getBestMimeType() {
+                const candidates = [
+                    'video/mp4;codecs=avc1,mp4a.40.2',
+                    'video/mp4',
+                    'video/webm;codecs=vp9,opus',
+                    'video/webm;codecs=vp8,opus',
+                    'video/webm'
+                ];
+                if (typeof MediaRecorder === 'undefined') return '';
+                for (const type of candidates) {
+                    if (MediaRecorder.isTypeSupported(type)) return type;
+                }
+                return '';
+            }
+
+            async function startVideoRecording(fullTrackAuto = false) {
+                if (typeof MediaRecorder === 'undefined' || !canvas.captureStream) {
+                    showToast('ဒီ Browser မှာ Video တိုက်ရိုက်ဖမ်းလို့မရပါ — Screen Record မုဒ်ကို သုံးပါ');
+                    return;
+                }
+
+                if (fullTrackAuto && !state.audioLoaded) {
+                    showToast('အစကနေ အဆုံးထိဖမ်းရန် MP3 / WAV ဖိုင် အရင်တင်ပါ');
+                    return;
+                }
+
+                ensureAudioEngine();
+
+                try {
+                    const videoStream = canvas.captureStream(30);
+                    const combinedTracks = [...videoStream.getVideoTracks()];
+
+                    if (audioDest && audioDest.stream) {
+                        const audioTracks = audioDest.stream.getAudioTracks();
+                        if (audioTracks.length > 0) {
+                            combinedTracks.push(audioTracks[0]);
+                        }
+                    }
+
+                    const combinedStream = new MediaStream(combinedTracks);
+                    const mimeType = getBestMimeType();
+                    const options = mimeType ? { mimeType, videoBitsPerSecond: 4500000 } : { videoBitsPerSecond: 4500000 };
+
+                    state.recordedChunks = [];
+                    state.mediaRecorder = new MediaRecorder(combinedStream, options);
+                    state.autoRecordFull = fullTrackAuto;
+
+                    state.mediaRecorder.ondataavailable = (e) => {
+                        if (e.data && e.data.size > 0) {
+                            state.recordedChunks.push(e.data);
+                        }
+                    };
+
+                    state.mediaRecorder.onstop = () => {
+                        const usedMime = state.mediaRecorder.mimeType || mimeType || 'video/webm';
+                        const isMp4 = usedMime.includes('mp4');
+                        const ext = isMp4 ? 'mp4' : 'webm';
+                        const blob = new Blob(state.recordedChunks, { type: usedMime });
+
+                        if (state.recordedVideoUrl) {
+                            URL.revokeObjectURL(state.recordedVideoUrl);
+                        }
+                        state.recordedVideoUrl = URL.createObjectURL(blob);
+
+                        const fileName = `emboss-wave-${Date.now()}.${ext}`;
+                        const sizeMb = (blob.size / (1024 * 1024)).toFixed(2);
+
+                        // Populate persistent Download Card (prevents mobile browsers losing file)
+                        recordedVideoPreview.src = state.recordedVideoUrl;
+                        directDownloadLink.href = state.recordedVideoUrl;
+                        directDownloadLink.download = fileName;
+                        videoMetaInfo.textContent = `${ext.toUpperCase()} • ${sizeMb} MB`;
+                        downloadCard.classList.add('visible');
+
+                        // Automatically trigger download
+                        const tempLink = document.createElement('a');
+                        tempLink.href = state.recordedVideoUrl;
+                        tempLink.download = fileName;
+                        document.body.appendChild(tempLink);
+                        tempLink.click();
+                        document.body.removeChild(tempLink);
+
+                        showToast('Video ထုတ်ပြီးပါပြီ — အောက်မှာလည်း Download ပြန်ဆွဲနိုင်ပါတယ်');
+                    };
+
+                    // If full-track auto record, rewind and start playing
+                    if (fullTrackAuto) {
+                        audioEl.currentTime = 0;
+                        state.manualIndex = 0;
+                        state.lastManualAdvanceTime = performance.now();
+                        await audioEl.play();
+                        updatePlayUI(true);
+                    } else if (state.audioLoaded && audioEl.paused) {
+                        await audioEl.play();
+                        updatePlayUI(true);
+                    }
+
+                    state.mediaRecorder.start(250);
+                    state.isRecording = true;
+                    state.recordStartTime = Date.now();
+                    recBadge.classList.add('active');
+                    btnRecordVideo.classList.remove('neu-btn-primary');
+                    btnRecordVideo.classList.add('neu-btn-danger');
+                    btnRecordLabel.textContent = 'ဖမ်းတာရပ်မယ် (Stop)';
+                    btnAutoRecordFull.disabled = true;
+
+                    showToast(fullTrackAuto ? 'အစကနေ အဆုံးထိ Video စဖမ်းနေပါပြီ...' : 'Video စဖမ်းနေပါပြီ...');
+                } catch (err) {
+                    console.error('Recording start error:', err);
+                    showToast('Video ဖမ်းရာတွင် အခက်အခဲရှိနေပါသည်');
+                }
+            }
+
+            function stopVideoRecording() {
+                if (!state.isRecording || !state.mediaRecorder) return;
+                state.isRecording = false;
+                state.autoRecordFull = false;
+                recBadge.classList.remove('active');
+                btnRecordVideo.classList.remove('neu-btn-danger');
+                btnRecordVideo.classList.add('neu-btn-primary');
+                btnRecordLabel.textContent = 'Video ထုတ်မယ်';
+                btnAutoRecordFull.disabled = false;
+
+                try {
+                    if (state.mediaRecorder.state !== 'inactive') {
+                        state.mediaRecorder.stop();
+                    }
+                } catch (err) {
+                    console.error('Recording stop error:', err);
+                }
+            }
+
+            btnRecordVideo.addEventListener('click', () => {
+                if (state.isRecording) {
+                    stopVideoRecording();
+                } else {
+                    startVideoRecording(false);
+                }
+            });
+
+            btnAutoRecordFull.addEventListener('click', () => {
+                if (!state.isRecording) {
+                    startVideoRecording(true);
+                }
+            });
+
+            btnCloseDownload.addEventListener('click', () => {
+                downloadCard.classList.remove('visible');
+            });
+
+            /* =========================================================
+               Screen Record Mode
+            ========================================================= */
+            let hintTimer = null;
+            function enterScreenRecordMode() {
+                state.isScreenRecordMode = true;
+                document.body.classList.add('record-mode');
+                document.body.style.backgroundColor = THEMES[state.theme].bg;
+                recordHintEl.classList.add('show');
+                clearTimeout(hintTimer);
+                hintTimer = setTimeout(() => recordHintEl.classList.remove('show'), 2600);
+            }
+
+            function exitScreenRecordMode() {
+                if (!state.isScreenRecordMode) return;
+                state.isScreenRecordMode = false;
+                document.body.classList.remove('record-mode');
+                document.body.style.backgroundColor = '';
+                recordHintEl.classList.remove('show');
+            }
+
+            btnScreenRecordMode.addEventListener('click', enterScreenRecordMode);
+
+            document.addEventListener('dblclick', () => {
+                if (state.isScreenRecordMode) exitScreenRecordMode();
+            });
+
+            document.addEventListener('touchend', () => {
+                if (!state.isScreenRecordMode) return;
+                const now = Date.now();
+                if (now - state.lastBgTap < 320) {
+                    exitScreenRecordMode();
+                    state.lastBgTap = 0;
+                } else {
+                    state.lastBgTap = now;
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && state.isScreenRecordMode) exitScreenRecordMode();
+            });
+
+            /* =========================================================
+               Audio Playback & Seek Controls
+            ========================================================= */
+            function updatePlayUI(playing) {
+                state.isPlaying = playing;
+                iconPlay.classList.toggle('hidden', playing);
+                iconPause.classList.toggle('hidden', !playing);
+                btnPlayPause.classList.toggle('active', playing);
+                if (playing) {
+                    state.lastManualAdvanceTime = performance.now();
+                }
+            }
+
+            btnPlayPause.addEventListener('click', async () => {
+                if (!state.audioLoaded) {
+                    showToast('ကျေးဇူးပြု၍ MP3 / WAV ဖိုင် အရင်တင်ပါ');
+                    state.textChangeTimestamp = performance.now();
+                    return;
+                }
+                ensureAudioEngine();
+                try {
+                    if (audioEl.paused) {
+                        await audioEl.play();
+                        updatePlayUI(true);
+                        state.textChangeTimestamp = performance.now();
+                    } else {
+                        audioEl.pause();
+                        updatePlayUI(false);
+                    }
+                } catch (err) {
+                    showToast('သီချင်းဖွင့်ရာတွင် အခက်အခဲရှိနေပါသည်');
+                }
+            });
+
+            btnReplay.addEventListener('click', async () => {
+                state.manualIndex = 0;
+                updateManualCounter();
+                if (state.srtCues.length === 0) {
+                    setActiveText(state.manualLines[0] || '', -1, true);
+                }
+                if (!state.audioLoaded) return;
+                ensureAudioEngine();
+                audioEl.currentTime = 0;
+                try {
+                    await audioEl.play();
+                    updatePlayUI(true);
+                } catch (err) {}
+            });
+
+            btnMute.addEventListener('click', () => {
+                state.isMuted = !state.isMuted;
+                audioEl.muted = state.isMuted;
+                btnMute.classList.toggle('active', state.isMuted);
+                iconVolOn.classList.toggle('hidden', state.isMuted);
+                iconVolOff.classList.toggle('hidden', !state.isMuted);
+            });
+
+            audioEl.addEventListener('loadedmetadata', () => {
+                timeDuration.textContent = formatTime(audioEl.duration);
+            });
+
+            audioEl.addEventListener('timeupdate', () => {
+                if (state.isSeeking) return;
+                const cur = audioEl.currentTime || 0;
+                const dur = audioEl.duration || 0;
+                timeCurrent.textContent = formatTime(cur);
+                seekFill.style.width = dur > 0 ? `${(cur / dur) * 100}%` : '0%';
+            });
+
+            audioEl.addEventListener('ended', () => {
+                updatePlayUI(false);
+                seekFill.style.width = '100%';
+                if (state.isRecording && state.autoRecordFull) {
+                    stopVideoRecording();
+                }
+            });
+
+            // Seek Bar Interaction
+            function seekAtClientX(clientX) {
+                if (!state.audioLoaded || !audioEl.duration) return;
+                const rect = seekTrack.getBoundingClientRect();
+                const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+                audioEl.currentTime = ratio * audioEl.duration;
+                seekFill.style.width = `${ratio * 100}%`;
+                timeCurrent.textContent = formatTime(audioEl.currentTime);
+            }
+
+            seekTrack.addEventListener('mousedown', (e) => { state.isSeeking = true; seekAtClientX(e.clientX); });
+            window.addEventListener('mousemove', (e) => { if (state.isSeeking) seekAtClientX(e.clientX); });
+            window.addEventListener('mouseup', () => { state.isSeeking = false; });
+            seekTrack.addEventListener('touchstart', (e) => { state.isSeeking = true; seekAtClientX(e.touches[0].clientX); }, { passive: true });
+            seekTrack.addEventListener('touchmove', (e) => { if (state.isSeeking) seekAtClientX(e.touches[0].clientX); }, { passive: true });
+            seekTrack.addEventListener('touchend', () => { state.isSeeking = false; });
+
+            /* =========================================================
+               File Inputs (Audio & SRT)
+            ========================================================= */
+            audioInput.addEventListener('change', (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                if (state.audioUrl) URL.revokeObjectURL(state.audioUrl);
+                state.audioUrl = URL.createObjectURL(file);
+                audioEl.src = state.audioUrl;
+                audioEl.load();
+                state.audioLoaded = true;
+                audioFileName.textContent = file.name;
+                seekFill.style.width = '0%';
+                timeCurrent.textContent = '0:00';
+                showToast('အသံဖိုင် တင်ပြီးပါပြီ — Play နှိပ်နိုင်ပါပြီ');
+            });
+
+            srtInput.addEventListener('change', (e) => {
+                const file = e.target.files && e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const cues = parseSRT(String(reader.result || ''));
+                    if (cues.length === 0) {
+                        showToast('SRT ဖိုင်ထဲတွင် စာတန်းထိုးအချိန်များ မတွေ့ပါ');
+                        return;
+                    }
+                    state.srtCues = cues;
+                    state.activeCueIndex = 0;
+                    srtFileName.textContent = file.name;
+                    srtCountBadge.textContent = `SRT ${cues.length} ခု`;
+                    srtCountBadge.classList.remove('hidden');
+                    btnClearSrt.classList.remove('hidden');
+                    srtPreviewSection.classList.remove('hidden');
+                    renderSrtCueList();
+                    setActiveText(cues[0].text, 0, true);
+                    showToast(`SRT စာကြောင်း ${cues.length} ခု တင်ပြီးပါပြီ`);
+                };
+                reader.readAsText(file, 'UTF-8');
+            });
+
+            btnClearSrt.addEventListener('click', () => {
+                state.srtCues = [];
+                state.activeCueIndex = -1;
+                srtInput.value = '';
+                srtFileName.textContent = '.srt ဖိုင် ရွေးချယ်ပါ';
+                srtCountBadge.classList.add('hidden');
+                btnClearSrt.classList.add('hidden');
+                srtPreviewSection.classList.add('hidden');
+                srtCueListWrap.classList.add('hidden');
+                parseManualLines();
+                showToast('SRT ဖိုင် ဖျက်ပြီးပါပြီ (ကိုယ်တိုင်ရိုက်မုဒ်သို့ ပြောင်းပြီ)');
+            });
+
+            btnToggleCueList.addEventListener('click', () => {
+                const isHidden = srtCueListWrap.classList.toggle('hidden');
+                cueChevron.textContent = isHidden ? '▼' : '▲';
+            });
+
+            /* =========================================================
+               UI Control Bindings (Tabs, Styles, Colors, Ratios, Themes)
+            ========================================================= */
+            // Tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.dataset.tab;
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+                    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `tab-${target}`));
+                });
+            });
+
+            // Manual Lyrics
+            inputManualLines.addEventListener('input', parseManualLines);
+            manualIntervalSelect.addEventListener('change', () => {
+                state.manualSeconds = parseInt(manualIntervalSelect.value, 10) || 5;
+            });
+
+            btnPrevLine.addEventListener('click', () => {
+                if (state.srtCues.length > 0 || state.manualLines.length === 0) return;
+                state.manualIndex = (state.manualIndex - 1 + state.manualLines.length) % state.manualLines.length;
+                updateManualCounter();
+                setActiveText(state.manualLines[state.manualIndex], -1, true);
+            });
+
+            btnNextLine.addEventListener('click', () => {
+                if (state.srtCues.length > 0 || state.manualLines.length === 0) return;
+                state.manualIndex = (state.manualIndex + 1) % state.manualLines.length;
+                updateManualCounter();
+                setActiveText(state.manualLines[state.manualIndex], -1, true);
+            });
+
+            // 4 Emboss Styles
+            document.querySelectorAll('.emboss-opt').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.embossStyle = btn.dataset.emboss;
+                    document.querySelectorAll('.emboss-opt').forEach(b => b.classList.toggle('active', b === btn));
+                    state.textChangeTimestamp = performance.now();
+                });
+            });
+
+            // 7 Animation Styles
+            document.querySelectorAll('.anim-opt').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.animStyle = btn.dataset.anim;
+                    document.querySelectorAll('.anim-opt').forEach(b => b.classList.toggle('active', b === btn));
+                    state.textChangeTimestamp = performance.now();
+                });
+            });
+
+            // Text Color Swatches & Picker
+            document.querySelectorAll('#textSwatches .swatch').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const col = btn.dataset.color;
+                    state.textColor = col;
+                    textColorLabel.textContent = col === 'auto' ? 'Auto Surface' : col.toUpperCase();
+                    if (col !== 'auto') textColorInput.value = col;
+                    document.querySelectorAll('#textSwatches .swatch').forEach(b => b.classList.toggle('active', b === btn));
+                });
+            });
+
+            textColorInput.addEventListener('input', () => {
+                state.textColor = textColorInput.value;
+                textColorLabel.textContent = textColorInput.value.toUpperCase();
+                document.querySelectorAll('#textSwatches .swatch').forEach(b => b.classList.remove('active'));
+            });
+
+            // Font Size
+            fontSizeSlider.addEventListener('input', () => {
+                state.fontSize = parseInt(fontSizeSlider.value, 10);
+                fontSizeVal.textContent = `${state.fontSize} px`;
+            });
+
+            // 4 Wave Styles
+            document.querySelectorAll('.wave-opt').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.waveStyle = btn.dataset.wave;
+                    document.querySelectorAll('.wave-opt').forEach(b => b.classList.toggle('active', b === btn));
+                });
+            });
+
+            // Wave Color Swatches & Picker
+            document.querySelectorAll('#waveSwatches .swatch').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const col = btn.dataset.color;
+                    state.waveColor = col;
+                    waveColorLabel.textContent = col.toUpperCase();
+                    waveColorInput.value = col;
+                    document.querySelectorAll('#waveSwatches .swatch').forEach(b => b.classList.toggle('active', b === btn));
+                });
+            });
+
+            waveColorInput.addEventListener('input', () => {
+                state.waveColor = waveColorInput.value;
+                waveColorLabel.textContent = waveColorInput.value.toUpperCase();
+                document.querySelectorAll('#waveSwatches .swatch').forEach(b => b.classList.remove('active'));
+            });
+
+            toggleWaveGradient.addEventListener('change', () => {
+                state.waveGradient = toggleWaveGradient.checked;
+            });
+
+            toggleCanvasProgress.addEventListener('change', () => {
+                state.showCanvasProgress = toggleCanvasProgress.checked;
+            });
+
+            // Aspect Ratio Switcher
+            document.querySelectorAll('.ratio-opt').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (state.isRecording) {
+                        showToast('Video ဖမ်းနေစဉ် အချိုးအစား ပြောင်းလို့မရပါ');
+                        return;
+                    }
+                    state.ratio = btn.dataset.ratio;
+                    const dim = RATIOS[state.ratio];
+                    canvas.width = dim.w;
+                    canvas.height = dim.h;
+                    document.querySelectorAll('.ratio-opt').forEach(b => b.classList.toggle('active', b === btn));
+                });
+            });
+
+            // Card Theme Switcher
+            document.querySelectorAll('.theme-opt').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.theme = btn.dataset.theme;
+                    document.querySelectorAll('.theme-opt').forEach(b => b.classList.toggle('active', b === btn));
+                });
+            });
+
+            /* =========================================================
+               PWA Install Button & GitHub Files Download Modal
+            ========================================================= */
+            btnInstallApp.addEventListener('click', async () => {
+                if (deferredInstallPrompt) {
+                    deferredInstallPrompt.prompt();
+                    const choice = await deferredInstallPrompt.userChoice;
+                    if (choice.outcome === 'accepted') {
+                        showToast('App ကို Install လုပ်ပြီးပါပြီ');
+                    }
+                    deferredInstallPrompt = null;
+                } else {
+                    pwaModal.classList.add('open');
+                    showToast('Browser Menu မှ "Add to Home screen" ဖြင့် Install လုပ်နိုင်ပါတယ်');
+                }
+            });
+
+            btnOpenPwaModal.addEventListener('click', () => pwaModal.classList.add('open'));
+            btnClosePwaModal.addEventListener('click', () => pwaModal.classList.remove('open'));
+            pwaModal.addEventListener('click', (e) => {
+                if (e.target === pwaModal) pwaModal.classList.remove('open');
+            });
+
+            function downloadTextFile(filename, content, mime = 'text/plain') {
+                const blob = new Blob([content], { type: mime });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            }
+
+            btnDlManifest.addEventListener('click', () => {
+                downloadTextFile('manifest.json', JSON.stringify(MANIFEST_JSON_OBJ, null, 2), 'application/json');
+                showToast('manifest.json ကို Download ဆွဲပြီးပါပြီ');
+            });
+
+            btnDlSw.addEventListener('click', () => {
+                downloadTextFile('sw.js', SW_JS_CONTENT, 'application/javascript');
+                showToast('sw.js ကို Download ဆွဲပြီးပါပြီ');
+            });
+
+            /* =========================================================
+               Initialization
+            ========================================================= */
+            window.addEventListener('load', () => {
+                parseManualLines();
+                state.textChangeTimestamp = performance.now();
+                requestAnimationFrame(renderFrame);
+            });
+        })();
+    </script>
+</body>
+</html>
